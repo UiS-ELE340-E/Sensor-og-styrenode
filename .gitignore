@@ -45,7 +45,6 @@ NodeCode/Debug/*
 *.su
 *.idb
 *.pdb
-*.launch
 
 # Kernel Module Compile Results
 *.mod*
