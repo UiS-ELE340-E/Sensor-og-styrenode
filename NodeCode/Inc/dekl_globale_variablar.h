@@ -17,6 +17,17 @@
 volatile uint8_t USART3_rx[10];
 volatile uint8_t USART3_rx_irq;
 
+// Node variables
+//---------------------------------------
+// Node: Control == 0, Sensor == 1
+uint8_t node;
+
+// Distance sensor data
+//---------------------------------------
+uint16_t sensor_data;
+uint16_t distance;
+
+
 // For tilstandsmaskinen
 //------------------------------------------------------
 volatile uint8_t gyldig_trykk_av_USERbrytar = 0; // For å unngå at optimaliseringa fjernar tilhøyrande kode

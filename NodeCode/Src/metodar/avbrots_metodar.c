@@ -8,6 +8,7 @@
 //---------------------------------------
 
 #include <cmsis_boot/stm32f30x.h>
+#include <cmsis_lib/stm32f30x_adc.h>
 #include <cmsis_lib/stm32f30x_gpio.h>
 #include <cmsis_lib/stm32f30x_usart.h>
 #include <extern_dekl_globale_variablar.h>
@@ -17,7 +18,7 @@
 //---------------------------------------
 
 void interrupt_init(void);
-void SysTick_oppstart(void);
+void SysTick_init(uint32_t hz);
 void SysTick_Handler(void);
 void USART3_IRQinit(void);
 void USART3_EXTI28_IRQHandler(void);
@@ -28,6 +29,7 @@ void GPIO_brytaravprelling(void);
 //---------------------------------------
 // Funksjonsdeklarasjonar
 //---------------------------------------
+# define CORE_HZ	72000000U
 
 // Oppsett av avbrotssystemet
 //-------------------------------------
@@ -40,16 +42,29 @@ void interrupt_init(void) {
 }
 
 
-// Oppsett av SysTick-taimeren som realiserer fast tikk-intervall
-//----------------------------------------------------------------
-void SysTick_oppstart(void) {
-	// Oppsett av SysTick
-	NVIC_SetPriority(SysTick_IRQn, 1); // 0-31 der 0 er h�gast
-	SysTick->CTRL = 0;  // Stopp teljaren
-	SysTick->LOAD = 72000;  // Startverdi gir 1 msek avbrotsintervall.
-	SysTick->VAL = 0;  // Nullstill teljaren
-	// (0x7), Start teljaren, avbrot og intern klokke.
-	SysTick->CTRL = (SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_TICKINT_Msk | SysTick_CTRL_CLKSOURCE_Msk) ;
+/** \brief  SysTick initialization
+
+    This function sets the period of SysTick based on the input
+    variable Hz. Hz should not be too low as this would give an
+    inaccurate tick length.
+
+    Note: This function can be run mid program to change the tick
+    length.
+
+    \param [in]  hz  Desired frequency
+ */
+void SysTick_init(uint32_t hz){
+	uint32_t reload = (CORE_HZ / hz) - 1;   // calculate reload
+	if (reload > 0xFFFFFF) reload = 0xFFFFFF; // max 24‑bit value
+
+	// Setup of SysTick
+	NVIC_SetPriority(SysTick_IRQn, 1); // 0-31, 0 is highest
+	SysTick->CTRL = 0;  // stop counting & interrupt
+	SysTick->LOAD = reload; // new period
+	SysTick->VAL = 0;  // clear current count
+	SysTick->CTRL = (SysTick_CTRL_CLKSOURCE_Msk
+					| SysTick_CTRL_TICKINT_Msk
+					| SysTick_CTRL_ENABLE_Msk);
 }
 
 void USART3_IRQinit(void) {
@@ -75,6 +90,13 @@ void USART3_EXTI28_IRQHandler(void) {
 //----------------------------------------------------------------
 void SysTick_Handler(void) {
 	uint8_t kommando = 0;
+
+	if (node == 0){
+
+	}
+	else if (node == 1){
+		sensor_data = ADC_GetConversionValue(ADC3);
+	}
 
 	tikkteljar_avprelling++;
 	if(tikkteljar_avprelling >= 10) { //Har det gått 10 x 1 millisek sidan siste

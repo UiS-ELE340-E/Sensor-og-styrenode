@@ -169,7 +169,6 @@ void USART3_init(void)
     USART_Cmd(USART3, ENABLE);
 }
 
-
 void USART_Put(USART_TypeDef* USARTx, uint8_t ch)
 {
     USART_SendData(USARTx, (uint8_t) ch);

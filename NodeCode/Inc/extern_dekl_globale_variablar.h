@@ -18,6 +18,10 @@
 extern uint8_t USART3_rx[10];
 extern uint8_t USART3_rx_irq;
 
+extern uint8_t node;
+
+extern uint16_t sensor_data;
+
 // For tilstandsmaskinen
 //------------------------------------------------------
 extern volatile uint8_t gyldig_trykk_av_USERbrytar;
