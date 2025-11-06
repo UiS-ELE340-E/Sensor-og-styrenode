@@ -1,5 +1,11 @@
-# Settings
-NodeCode/.settings/*
+# Metadata
+*.metadata/*
+
+# Auto generated
+*STM32F303VCTX_FLASH.ld
+*syscalls.c
+*sysmem.c
+*Startup/*
 
 # Prerequisites
 *.d
