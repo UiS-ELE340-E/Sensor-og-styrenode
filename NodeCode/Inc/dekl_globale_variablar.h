@@ -9,7 +9,7 @@
 //---------------------------------------------------------------------
 
 //---------------------------------------
-// Globale variablar
+// Global variables
 //---------------------------------------
 
 // Interrupt variables
@@ -26,6 +26,13 @@ uint8_t node;
 //---------------------------------------
 uint16_t sensor_data;
 uint16_t distance;
+
+uint8_t communication;
+
+// DMA transfer variables
+#define buffer_size  9
+uint8_t transmit_buffer[buffer_size];
+uint8_t data[buffer_size];
 
 
 // For tilstandsmaskinen
@@ -73,6 +80,7 @@ uint16_t PWM_preskalering = 0; // Ingen preskalering
 
 // For realisering av sensoravlesing og tidsreferering av måledata
 //----------------------------------------------------------------
+uint8_t sample_time = 0;
 uint16_t tikkteljar_sampling = 0;
 uint8_t samplenr = 0;
 volatile uint8_t ny_maaling = 0; // For å unngå at optimaliseringa fjernar tilhøyrande kode

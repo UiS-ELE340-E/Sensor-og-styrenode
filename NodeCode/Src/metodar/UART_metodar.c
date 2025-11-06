@@ -4,31 +4,13 @@
 //---------------------------------------
 
 //---------------------------------------
-// Inklusjonar og definisjonar
+// Inclusions and definitions
 //---------------------------------------
-
-#include <cmsis_boot/stm32f30x.h>
-#include <cmsis_lib/stm32f30x_gpio.h>
-#include <cmsis_lib/stm32f30x_rcc.h>
-#include <cmsis_lib/stm32f30x_usart.h>
-#include <extern_dekl_globale_variablar.h>
+#include <metodar/UART_metodar.h>
 
 //---------------------------------------
-// Funksjonsprototypar
+// Function definitions
 //---------------------------------------
-
-void USART_Put(USART_TypeDef*,uint8_t ch);
-uint8_t USART_Get(USART_TypeDef*);
-void USART_skriv(USART_TypeDef*, uint8_t ch);
-uint8_t USART_les(USART_TypeDef*);
-void USART_skriv_streng(USART_TypeDef*, uint8_t *streng);
-void USART2_send_tid8_og_data16(uint8_t tid, int16_t loggeverdi);
-void USART2_send_tid8_og_data16x3(uint8_t tid, int16_t loggeverdi1, int16_t loggeverdi2, int16_t loggeverdi3);
-void USART2_handtering(uint8_t loggedata);
-void USART2_handtering1(void);
-void USART2_handtering2(uint16_t teljar);
-void USART2andtering3(void);
-
 void USART1_init(void)
 {
     // --- Enable peripheral clocks ---
@@ -69,9 +51,57 @@ void USART1_init(void)
     GPIO_Init(GPIOA, &GPIO_InitStructure_UART1);
     // Alternate function for USART1 RX
     GPIO_PinAFConfig(GPIOA, GPIO_PinSource10, GPIO_AF_7);
+}
 
-    // --- Enable USART1 ---
+void USART1_DMA_init(uint8_t Tx){
+    // --- Configure DMA ---
+    DMA_InitTypeDef DMA_InitStructure;
+    if (Tx == 1){
+    	DMA_DeInit(DMA1_Channel4);
+    }
+    else{
+    	DMA_DeInit(DMA1_Channel5);
+    }
+    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&USART1->RDR;
+    DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)transmit_buffer;
+    DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;
+    DMA_InitStructure.DMA_BufferSize = buffer_size;
+    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+    DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+    DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+    DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+    DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+    DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
+    if (Tx == 1){
+    	DMA_Init(DMA1_Channel4, &DMA_InitStructure);
+    }
+    else{
+    	DMA_Init(DMA1_Channel5, &DMA_InitStructure);
+    }
+}
+
+void USART1_DMA_enable(uint8_t Tx){
+	if (Tx == 1){
+		// --- Enable DMA for USART3 TX ---
+		USART_DMACmd(USART1, USART_DMAReq_Tx, ENABLE);
+	}
+	else{
+		// --- Enable DMA for USART3 RX ---
+		USART_DMACmd(USART1, USART_DMAReq_Rx, ENABLE);
+	}
+
+    // --- Enable USART3 ---
     USART_Cmd(USART1, ENABLE);
+
+	if (Tx == 1){
+		// --- Enable DMA ---
+		DMA_Cmd(DMA2_Channel4, ENABLE);
+	}
+	else{
+	    // --- Enable DMA ---
+	    DMA_Cmd(DMA2_Channel5, ENABLE);
+	}
 }
 
 // Initialization for for USART2
@@ -127,8 +157,9 @@ void USART2_init(void)
 void USART3_init(void)
 {
     // --- Enable peripheral clocks ---
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);   // USART3 clock
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOD, ENABLE);      // GPIOD clock
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA2, ENABLE);
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOD, ENABLE);
 
     // --- Configure USART3 clock settings ---
     USART_ClockInitTypeDef USART3_ClockInitStructure;
@@ -164,9 +195,55 @@ void USART3_init(void)
     GPIO_Init(GPIOD, &GPIO_InitStructure_UART3);
     // Alternate function for USART3 RX
     GPIO_PinAFConfig(GPIOD, GPIO_PinSource9, GPIO_AF_7);
+}
+
+void USART3_DMA_init(uint8_t Tx){
+    // --- Configure DMA ---
+    DMA_InitTypeDef DMA_InitStructure;
+    if (Tx == 1){
+    	DMA_DeInit(DMA1_Channel2);
+    }
+    else{
+    	DMA_DeInit(DMA1_Channel3);
+    }
+    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&USART3->RDR;
+    DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)transmit_buffer;
+    DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;
+    DMA_InitStructure.DMA_BufferSize = buffer_size;
+    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+    DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+    DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+    DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+    DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+    DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
+    if (Tx == 1){
+    	DMA_Init(DMA1_Channel2, &DMA_InitStructure);
+        // Enable the TX-complete / error interrupts
+        DMA_ITConfig(DMA1_Channel2, DMA_ISR_TCIF2 | DMA_ISR_TEIF2, ENABLE);
+        NVIC_EnableIRQ(DMA1_Channel2_IRQn);    }
+    else{
+    	DMA_Init(DMA1_Channel3, &DMA_InitStructure);
+    }
+}
+
+void USART3_DMA_enable(uint8_t Tx){
+	if (Tx == 1){
+		// --- Enable DMA for USART3 TX ---
+		USART_DMACmd(USART3, USART_DMAReq_Tx, ENABLE);
+	}
+	else{
+		// --- Enable DMA for USART3 RX ---
+		USART_DMACmd(USART3, USART_DMAReq_Rx, ENABLE);
+	}
 
     // --- Enable USART3 ---
     USART_Cmd(USART3, ENABLE);
+
+	if (Tx == 0){
+	    // --- Enable DMA RX ---
+	    DMA_Cmd(DMA2_Channel3, ENABLE);
+	}
 }
 
 void USART_Put(USART_TypeDef* USARTx, uint8_t ch)

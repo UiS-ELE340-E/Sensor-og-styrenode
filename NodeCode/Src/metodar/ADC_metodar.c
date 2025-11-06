@@ -47,12 +47,3 @@ void ADC3_init(void){
     ADC_StartCalibration(ADC3);
     while (ADC_GetCalibrationStatus(ADC3)) {}
 }
-
-
-/*
-while (1)
-{
-    uint16_t val = readADC();
-    // Do something with 'val' – e.g., send over UART, feed a PID loop, etc.
-}
-*/

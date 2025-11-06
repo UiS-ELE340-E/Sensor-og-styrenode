@@ -12,6 +12,10 @@
 // Globale variablar
 //---------------------------------------
 
+// Distance sensor data
+//---------------------------------------
+extern uint16_t sensor_data;
+extern uint16_t distance;
 
 // Interrupt variables
 //---------------------------------------
@@ -21,6 +25,13 @@ extern uint8_t USART3_rx_irq;
 extern uint8_t node;
 
 extern uint16_t sensor_data;
+
+extern uint8_t communication;
+
+// DMA transfer variables
+#define buffer_size 9
+extern uint8_t transmit_buffer[buffer_size];
+extern uint8_t data[buffer_size];
 
 // For tilstandsmaskinen
 //------------------------------------------------------
@@ -37,6 +48,7 @@ extern uint8_t trykkteljar_USERbrytar;
 
 // For realisering av brytarsjekk mm i SysTick-metoden
 //------------------------------------------------------
+extern uint8_t sample_time;
 extern uint8_t  tikkteljar_avprelling;
 extern uint16_t tikkteljar_diodar;
 extern volatile uint8_t oppdater_diodar;
