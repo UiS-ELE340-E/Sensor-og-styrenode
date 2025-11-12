@@ -8,20 +8,7 @@
 //---------------------------------------
 // Inclusions and definitions
 //---------------------------------------
-#include <cmsis_lib/stm32f30x_adc.h>
-#include <cmsis_lib/stm32f30x_dma.h>
-#include "string.h"
-#include <extern_dekl_globale_variablar.h>
-#include "stm32f3_discovery/stm32f3_discovery_lsm303dlhc.h"
-
-//---------------------------------------
-// Function prototypes
-//---------------------------------------
-void sensor_card_logic(void);
-void get_accelerometerdata(void);
-uint16_t convert_sensordata(void);
-void construct_data(void);
-void send_data(void);
+#include <metodar/sensor_card.h>
 
 //---------------------------------------
 // Function definitions
@@ -44,7 +31,7 @@ void get_accelerometerdata(void){
 	uint16_t a;
 
 	// OUT_X_L_A is stored on the lowest address in XYZ-register in the circuit
-	LSM303DLHC_Read(ACC_I2C_ADDRESS, LSM303DLHC_OUT_X_L_A, buffer, 6);
+	//LSM303DLHC_Read(ACC_I2C_ADDRESS, LSM303DLHC_OUT_X_L_A, buffer, 6);
 
 	// Build accelerometer data.
 	/* Buffer 1 is MSByte (from data sheet). Make the relevant 12 bits into integer.

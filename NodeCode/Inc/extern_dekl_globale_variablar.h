@@ -19,8 +19,8 @@ extern uint16_t distance;
 
 // Interrupt variables
 //---------------------------------------
-extern uint8_t USART3_rx[10];
-extern uint8_t USART3_rx_irq;
+extern volatile uint8_t USART3_rx[10];
+extern volatile uint8_t USART3_rx_irq;
 
 extern uint8_t node;
 
