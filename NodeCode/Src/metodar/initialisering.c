@@ -33,6 +33,7 @@ void LinMot_oppstart(void);
 void aks_oppstart(void);
 void gyro_oppstart(void);
 void interrupt_init(void);
+void ADC3_init(void);
 
 //---------------------------------------
 // Function definitions
@@ -51,6 +52,7 @@ void init(void) {
  	USART3_DMA_init(0);
 	TIM2_init();
 	TIM4_init();
+	ADC3_init();
 	SysTick_init(1000);
 	interrupt_init();
 
@@ -65,6 +67,14 @@ void init(void) {
 }
 
 uint8_t control_or_sensor(void){
+	while (ADC_GetFlagStatus(ADC3, ADC_CR_ADEN) == RESET);
+	// Start ADC conversion
+	ADC_StartConversion(ADC3);
+
+	// Wait until conversion is complete
+	while (ADC_GetFlagStatus(ADC3, ADC_FLAG_EOC) == RESET);
+
+	// Read the converted value
 	sensor_data = ADC_GetConversionValue(ADC3);
 
 	if (sensor_data == 0){
