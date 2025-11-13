@@ -11,11 +11,26 @@
 //---------------------------------------
 // Globale variablar
 //---------------------------------------
+
 //Control Card variables
 //---------------------------------------
+//Power
 extern uint16_t prescalar;
 extern uint16_t period;
 extern uint16_t puls;
+//PID
+extern uint16_t error;				// Error
+extern uint16_t error_past;
+extern uint16_t up;					// Proportional quantity
+extern uint16_t ui; 				// Integrator quantity
+extern uint16_t ui_past;
+extern uint16_t ud;					// Derivator quantity
+extern uint16_t u;					// Power parameter
+
+
+extern uint8_t IR_sensor_data_mask;
+extern uint8_t accelerometer_data_mask;
+extern uint8_t distance_calculation;
 
 // Distance sensor data
 //---------------------------------------
@@ -35,7 +50,7 @@ extern uint8_t communication;
 
 // DMA transfer variables
 #define buffer_size 9
-extern uint8_t transmit_buffer[buffer_size];
+extern uint8_t transmit_buffer[buffer_size];		//USART 1
 extern uint8_t data[buffer_size];
 
 // For tilstandsmaskinen

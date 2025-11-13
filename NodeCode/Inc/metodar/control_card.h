@@ -15,7 +15,12 @@
 #include <cmsis_lib/stm32f30x_dma.h>
 #include <extern_dekl_globale_variablar.h>
 
-
-
+//---------------------------------------
+// Function prototypes
+//---------------------------------------
+void control_card_logic(void);
+void PID_calculation(void);
+void power_delivery(void);
+void data_from_sensor_card(void);
 
 #endif /* METODAR_CONTROL_CARD_H_ */

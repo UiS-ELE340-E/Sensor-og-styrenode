@@ -51,13 +51,14 @@ void init(void) {
  	USART3_DMA_init(1);
  	USART3_DMA_init(0);
 	TIM2_init();
+	TIM3_init();
 	TIM4_init();
-	ADC3_init();
+//	ADC3_init();
 	SysTick_init(1000);
 	interrupt_init();
 
 	// Check node type
-    node = control_or_sensor();
+//    node = control_or_sensor();
     // Enable node specific peripherals
     //enable(node);
 
@@ -123,3 +124,4 @@ void enable(uint8_t node){
 		}
 	}
 }
+
