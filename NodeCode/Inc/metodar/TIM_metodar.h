@@ -22,6 +22,7 @@
 //---------------------------------------
 void TIM2_init(void);
 void PWM_sett_vidde_TIM2_CH2(uint32_t vidde);
+void TIM3_init(void);
 void TIM4_init(void);
 void TIM4_deactivate(void);
 

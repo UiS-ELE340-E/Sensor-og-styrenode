@@ -11,6 +11,11 @@
 //---------------------------------------
 // Globale variablar
 //---------------------------------------
+//Control Card variables
+//---------------------------------------
+extern uint16_t prescalar;
+extern uint16_t period;
+extern uint16_t puls;
 
 // Distance sensor data
 //---------------------------------------
