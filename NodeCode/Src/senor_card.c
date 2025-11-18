@@ -21,6 +21,7 @@
 void sensor_card_logic(void){
 	sample_time++;
 	get_accelerometerdata();
+	ADC_StartConversion(ADC3);
 	sensor_data = ADC_GetConversionValue(ADC3);
 	distance = convert_sensordata();
 	construct_data();

@@ -17,7 +17,7 @@ void ADC3_init(void);
 //---------------------------------------
 void ADC3_init(void){
     /* Clock & GPIO */
-    RCC_APB2PeriphClockCmd(RCC_AHBPeriph_ADC34, ENABLE);
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_ADC34, ENABLE);
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
     GPIO_InitTypeDef gpio = {0};
     gpio.GPIO_Pin  = GPIO_Pin_1;
@@ -50,4 +50,6 @@ void ADC3_init(void){
     ADC_StartCalibration(ADC3);
     while (ADC_GetCalibrationStatus(ADC3)) {}
     ADC_Cmd(ADC3, ENABLE);
+
+    while (ADC_GetFlagStatus(ADC3, ADC_FLAG_RDY) == RESET);
 }

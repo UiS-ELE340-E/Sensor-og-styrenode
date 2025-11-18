@@ -73,7 +73,7 @@ void init(void) {
 }
 
 uint8_t control_or_sensor(void){
-	while (ADC_GetFlagStatus(ADC3, ADC_CR_ADEN) == RESET);
+	while (ADC_GetFlagStatus(ADC3, ADC_FLAG_RDY) == RESET);
 	// Start ADC conversion
 	ADC_StartConversion(ADC3);
 

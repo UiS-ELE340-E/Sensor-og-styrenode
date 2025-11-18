@@ -54,7 +54,7 @@ int main(void)  {
     	control_card_logic();
     }
     while(node == 1) {
-    	__WFI();
+    	//__WFI();
     	sensor_card_logic();
     }
 }
