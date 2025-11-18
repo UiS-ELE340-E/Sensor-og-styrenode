@@ -68,18 +68,18 @@ uint16_t convert_sensordata(void){
 }
 
 void construct_data(void){
-	/*
-	data[0] = xxx;
-	data[1] = xxx;
-	data[2] = xxx;
-	data[3] = xxx;
-	data[4] = xxx;
-	data[5] = xxx;
-	data[6] = xxx;
-	data[7] = xxx;
-	data[8] = xxx;
-	data[9] = xxx;
-	*/
+
+	data[0] = 0;
+	data[1] = distance;
+	data[2] = 0;
+	data[3] = 0;
+	data[4] = 0;
+	data[5] = 0;
+	data[6] = 0;
+	data[7] = 0;
+	data[8] = 0;
+	data[9] = 0;
+
 }
 
 void send_data(void){

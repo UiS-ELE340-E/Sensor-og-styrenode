@@ -73,7 +73,6 @@ void init(void) {
 }
 
 uint8_t control_or_sensor(void){
-	while (ADC_GetFlagStatus(ADC3, ADC_FLAG_RDY) == RESET);
 	// Start ADC conversion
 	ADC_StartConversion(ADC3);
 
@@ -83,7 +82,7 @@ uint8_t control_or_sensor(void){
 	// Read the converted value
 	sensor_data = ADC_GetConversionValue(ADC3);
 
-	if (sensor_data == 0){
+	if (sensor_data < 50){
 		// Control node
 		ADC_Cmd(ADC3, DISABLE);
 		return 0;

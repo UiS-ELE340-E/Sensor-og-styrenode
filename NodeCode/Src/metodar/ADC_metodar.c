@@ -44,9 +44,8 @@ void ADC3_init(void){
 
     /* Calibration & enable */
     ADC_VoltageRegulatorCmd(ADC3, ENABLE);
+    // Wait for regulator to power on
     for (volatile int i = 0; i < 1000; ++i) __NOP();   // ~10 µs wait time
-    //ADC_ResetCalibration(ADC3);
-    //while (ADC_GetCalibrationStatus(ADC3)) {}
     ADC_StartCalibration(ADC3);
     while (ADC_GetCalibrationStatus(ADC3)) {}
     ADC_Cmd(ADC3, ENABLE);

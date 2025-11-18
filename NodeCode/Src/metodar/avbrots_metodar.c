@@ -38,7 +38,7 @@ void interrupt_init(void) {
 	// vekk (dei 4 MSb gir pri-verdien).
 	// SysTick har fått avbrotsprioritet lik 1, sjå SysTick-fila.
 	__set_BASEPRI(0x20);
-	USART3_IRQinit();
+	//USART3_IRQinit();
 }
 
 
