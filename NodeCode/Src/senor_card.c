@@ -91,7 +91,7 @@ void send_data(void){
 	// 2️. Make sure the DMA channel is idle
 	DMA_Cmd(DMA1_Channel2, DISABLE);
 	// Wait for disable
-	while (DMA_GetITStatus(DMA1_IT_GL2)) __NOP;
+	while (DMA1_Channel2->CCR & DMA_CCR_EN) {__NOP();}
 
 	// 3️. Tell the DMA how many bytes to move this time
 	// DMA1_Channel2->CNDTR = buffer_size;
