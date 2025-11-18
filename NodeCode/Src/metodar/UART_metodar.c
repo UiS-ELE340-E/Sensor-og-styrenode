@@ -214,16 +214,21 @@ void USART3_DMA_init(uint8_t Tx){
     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
     DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
     DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
-    DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
     DMA_InitStructure.DMA_Priority = DMA_Priority_High;
     DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
     if (Tx == 1){
+        DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
     	DMA_Init(DMA1_Channel2, &DMA_InitStructure);
         // Enable the TX-complete / error interrupts
         DMA_ITConfig(DMA1_Channel2, DMA_ISR_TCIF2 | DMA_ISR_TEIF2, ENABLE);
-        NVIC_EnableIRQ(DMA1_Channel2_IRQn);    }
+        NVIC_EnableIRQ(DMA1_Channel2_IRQn);
+    }
     else{
+        DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
     	DMA_Init(DMA1_Channel3, &DMA_InitStructure);
+        // Enable the TX-complete / error interrupts
+        DMA_ITConfig(DMA1_Channel3, DMA_ISR_TCIF3 | DMA_ISR_TEIF3, ENABLE);
+        NVIC_EnableIRQ(DMA1_Channel3_IRQn);
     }
 }
 

@@ -11,6 +11,7 @@
 #include <cmsis_lib/stm32f30x_adc.h>
 #include <cmsis_lib/stm32f30x_gpio.h>
 #include <cmsis_lib/stm32f30x_usart.h>
+#include <cmsis_lib/stm32f30x_dma.h>
 #include <extern_dekl_globale_variablar.h>
 
 //---------------------------------------
@@ -22,6 +23,8 @@ void SysTick_init(uint32_t hz);
 void SysTick_Handler(void);
 void USART3_IRQinit(void);
 void USART3_EXTI28_IRQHandler(void);
+void EXTI8_IRQHandler(void);
+void EXTI9_IRQHandler(void);
 void GPIO_sjekk_brytar(void);
 int8_t USART_les(USART_TypeDef*);
 void PWM_sett_vidde_TIM4_k4(uint16_t vidde);
@@ -38,7 +41,6 @@ void interrupt_init(void) {
 	// vekk (dei 4 MSb gir pri-verdien).
 	// SysTick har fått avbrotsprioritet lik 1, sjå SysTick-fila.
 	__set_BASEPRI(0x20);
-	//USART3_IRQinit();
 }
 
 
@@ -83,6 +85,21 @@ void USART3_EXTI28_IRQHandler(void) {
 		USART3_rx[USART3_rx_irq] = USART_ReceiveData(USART3);
 		USART3_rx_irq++;
 	}
+}
+
+void EXTI8_IRQHandler(void){
+	if (DMA_GetITStatus(DMA1_IT_TE2) != RESET){
+
+	}
+}
+
+void EXTI9_IRQHandler(void){
+	if (DMA_GetITStatus(DMA1_IT_TC3) != RESET){
+		for (int i = 0; i < 9; ++i){
+			data[i] = transmit_buffer[i];
+		}
+	}
+
 }
 
 // Avbrotsmetode ("Interrupt Service Routine", ISR)

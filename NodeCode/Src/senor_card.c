@@ -69,9 +69,9 @@ uint16_t convert_sensordata(void){
 
 void construct_data(void){
 
-	data[0] = 0;
-	data[1] = distance;
-	data[2] = 0;
+	data[0] = sample_time;
+	data[1] = distance & 0xFF;
+	data[2] = (distance >> 8) & 0xFF;
 	data[3] = 0;
 	data[4] = 0;
 	data[5] = 0;

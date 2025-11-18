@@ -52,8 +52,6 @@ void init(void) {
 	USART1_init();
 	USART2_init();
  	USART3_init();
- 	USART3_DMA_init(1);
- 	USART3_DMA_init(0);
 	TIM2_init();
 	TIM4_init();
 	ADC3_init();
@@ -113,6 +111,7 @@ void enable(uint8_t node){
 		// Control node
 		TIM4_deactivate();
 		if (communication == 0){
+		 	USART3_DMA_init(0);
 			USART3_DMA_enable(0);
 		}
 		else{
@@ -122,6 +121,7 @@ void enable(uint8_t node){
 	else if (node == 1){
 		// Sensor node
 		if (communication == 0){
+		 	USART3_DMA_init(1);
 			USART3_DMA_enable(1);
 		}
 		else{
