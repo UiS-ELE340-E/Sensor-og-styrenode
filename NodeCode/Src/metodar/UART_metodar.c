@@ -158,7 +158,6 @@ void USART3_init(void)
 {
     // --- Enable peripheral clocks ---
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA2, ENABLE);
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOD, ENABLE);
 
     // --- Configure USART3 clock settings ---
@@ -198,6 +197,7 @@ void USART3_init(void)
 }
 
 void USART3_DMA_init(uint8_t Tx){
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
     // --- Configure DMA ---
     DMA_InitTypeDef DMA_InitStructure;
     if (Tx == 1){

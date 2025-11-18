@@ -89,7 +89,7 @@ void USART3_EXTI28_IRQHandler(void) {
 
 void EXTI8_IRQHandler(void){
 	if (DMA_GetITStatus(DMA1_IT_TE2) != RESET){
-
+		GPIOE->ODR = GPIOE->ODR | 0x0400;
 	}
 }
 
@@ -98,6 +98,7 @@ void EXTI9_IRQHandler(void){
 		for (int i = 0; i < 9; ++i){
 			data[i] = transmit_buffer[i];
 		}
+		GPIOE->ODR = GPIOE->ODR | 0x0400;
 	}
 
 }
