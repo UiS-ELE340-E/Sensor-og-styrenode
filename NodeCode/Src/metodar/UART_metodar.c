@@ -197,15 +197,13 @@ void USART3_init(void)
 }
 
 void USART3_DMA_init(uint8_t Tx){
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
+	// --- Enable peripheral clocks ---
+	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
+	// --- Deinitialize DMA1 channel 2 and 3 ---
+	DMA_DeInit(DMA1_Channel2);
+    DMA_DeInit(DMA1_Channel3);
     // --- Configure DMA ---
     DMA_InitTypeDef DMA_InitStructure;
-    if (Tx == 1){
-    	DMA_DeInit(DMA1_Channel2);
-    }
-    else{
-    	DMA_DeInit(DMA1_Channel3);
-    }
     DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&USART3->RDR;
     DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)transmit_buffer;
     DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;
@@ -226,7 +224,7 @@ void USART3_DMA_init(uint8_t Tx){
     else{
         DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
     	DMA_Init(DMA1_Channel3, &DMA_InitStructure);
-        // Enable the TX-complete / error interrupts
+        // Enable the RX-complete / error interrupts
         DMA_ITConfig(DMA1_Channel3, DMA_ISR_TCIF3 | DMA_ISR_TEIF3, ENABLE);
         NVIC_EnableIRQ(DMA1_Channel3_IRQn);
     }

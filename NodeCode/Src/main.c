@@ -55,7 +55,10 @@ int main(void)  {
     }
     while(node == 1) {
     	//__WFI();
-    	sensor_card_logic();
+    	if  (new_sample == 1) {
+    		sensor_card_logic();
+    		new_sample = 0;
+    	}
     }
 }
 

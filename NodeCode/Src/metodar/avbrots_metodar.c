@@ -113,7 +113,7 @@ void SysTick_Handler(void) {
 
 	}
 	else if (node == 1){
-		sensor_data = ADC_GetConversionValue(ADC3);
+		new_sample = 1;
 	}
 
 	tikkteljar_avprelling++;

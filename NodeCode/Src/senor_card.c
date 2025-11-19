@@ -20,6 +20,11 @@
  */
 void sensor_card_logic(void){
 	sample_time++;
+	slow_blink++;
+	if (slow_blink > 9){
+		GPIOE->ODR = GPIOE->ODR ^ 0x1000;
+		slow_blink = 0;
+	}
 	get_accelerometerdata();
 	ADC_StartConversion(ADC3);
 	sensor_data = ADC_GetConversionValue(ADC3);
@@ -84,19 +89,16 @@ void construct_data(void){
 
 void send_data(void){
 
-	// 1️. Copy the payload into the static buffer
-	// Fast RAM to RAM copy
-	memcpy(transmit_buffer, data, buffer_size);
-
-	// 2️. Make sure the DMA channel is idle
+	// 1️. Make sure the DMA channel is idle
 	DMA_Cmd(DMA1_Channel2, DISABLE);
 	// Wait for disable
 	while (DMA1_Channel2->CCR & DMA_CCR_EN) {__NOP();}
 
-	// 3️. Tell the DMA how many bytes to move this time
-	// DMA1_Channel2->CNDTR = buffer_size;
+	// 2️. Copy the payload into the static buffer
+	// Fast RAM to RAM copy
+	memcpy(transmit_buffer, data, buffer_size);
 
-	// 4️. (Re)enable the channel – the transfer starts immediately
+	// 3️. (Re)enable the channel – the transfer starts immediately
 	DMA_Cmd(DMA1_Channel2, ENABLE);
 
 	return;
