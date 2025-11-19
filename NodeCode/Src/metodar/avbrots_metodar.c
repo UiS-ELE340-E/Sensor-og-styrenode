@@ -88,10 +88,9 @@ void USART3_EXTI28_IRQHandler(void) {
 }
 
 void DMA1_CH2_IRQHandler(void){
-	if (DMA_GetITStatus(DMA1_IT_TC2) != RESET){
+	if (DMA_GetITStatus(DMA1_IT_TE2) != RESET){
 		GPIOE->BSRR = (1 << 10);
 	}
-	GPIOE->BSRR = (1 << 10);
 }
 
 void DMA1_CH3_IRQHandler(void){
