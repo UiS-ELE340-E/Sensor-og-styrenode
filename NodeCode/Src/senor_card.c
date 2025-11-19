@@ -98,7 +98,11 @@ void send_data(void){
 	// Fast RAM to RAM copy
 	memcpy(transmit_buffer, data, buffer_size);
 
-	// 3️. (Re)enable the channel – the transfer starts immediately
+	// 3️. Tell the DMA how many bytes to move this time
+	DMA1_Channel2->CNDTR = buffer_size;
+	//DMA1_Channel2->CCR &= !DMA_Mode_Circular;
+
+	// 4. (Re)enable the channel – the transfer starts immediately
 	DMA_Cmd(DMA1_Channel2, ENABLE);
 
 	return;

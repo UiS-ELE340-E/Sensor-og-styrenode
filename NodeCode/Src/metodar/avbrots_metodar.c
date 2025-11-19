@@ -23,8 +23,8 @@ void SysTick_init(uint32_t hz);
 void SysTick_Handler(void);
 void USART3_IRQinit(void);
 void USART3_EXTI28_IRQHandler(void);
-void EXTI8_IRQHandler(void);
-void EXTI9_IRQHandler(void);
+void DMA1_CH2_IRQHandler(void);
+void DMA1_CH3_IRQHandler(void);
 void GPIO_sjekk_brytar(void);
 int8_t USART_les(USART_TypeDef*);
 void PWM_sett_vidde_TIM4_k4(uint16_t vidde);
@@ -87,18 +87,19 @@ void USART3_EXTI28_IRQHandler(void) {
 	}
 }
 
-void EXTI8_IRQHandler(void){
+void DMA1_CH2_IRQHandler(void){
 	if (DMA_GetITStatus(DMA1_IT_TC2) != RESET){
-		GPIOE->ODR = GPIOE->ODR | 0x0400;
+		GPIOE->BSRR = (1 << 10);
 	}
+	GPIOE->BSRR = (1 << 10);
 }
 
-void EXTI9_IRQHandler(void){
+void DMA1_CH3_IRQHandler(void){
 	if (DMA_GetITStatus(DMA1_IT_TC3) != RESET){
 		for (int i = 0; i < 9; ++i){
 			data[i] = transmit_buffer[i];
 		}
-		GPIOE->ODR = GPIOE->ODR | 0x0400;
+		GPIOE->BSRR = (1 << 10);
 	}
 
 }

@@ -8,7 +8,9 @@
 //---------------------------------------
 // Inclusions and definitions
 //---------------------------------------
-
+#include <cmsis_boot/stm32f30x.h>
+#include "string.h"
+#include <extern_dekl_globale_variablar.h>
 //---------------------------------------
 // Function prototypes
 //---------------------------------------
