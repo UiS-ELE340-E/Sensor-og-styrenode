@@ -88,7 +88,7 @@ void USART3_EXTI28_IRQHandler(void) {
 }
 
 void EXTI8_IRQHandler(void){
-	if (DMA_GetITStatus(DMA1_IT_TE2) != RESET){
+	if (DMA_GetITStatus(DMA1_IT_TC2) != RESET){
 		GPIOE->ODR = GPIOE->ODR | 0x0400;
 	}
 }
