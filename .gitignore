@@ -1,14 +1,26 @@
+# Generated dependency files
+*.d
+
+# Eclipse/STM32CubeIDE metadata backups
+*.launch
+*.settings/
+
+# CubeMX generated backup files
+*.bak
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
 # Metadata
 *.metadata/*
-
-# Auto generated
-*STM32F303VCTX_FLASH.ld
-*syscalls.c
-*sysmem.c
-*Startup/*
-
-# Prerequisites
-*.d
 
 # Object files
 *.o

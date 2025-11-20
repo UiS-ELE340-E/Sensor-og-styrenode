@@ -17,9 +17,9 @@ void ADC3_init(void);
 //---------------------------------------
 void ADC3_init(void){
     /* Clock & GPIO */
-    RCC_APB2PeriphClockCmd(RCC_AHBPeriph_ADC34, ENABLE);
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_ADC34, ENABLE);
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
-    GPIO_InitTypeDef gpio = {1};
+    GPIO_InitTypeDef gpio = {0};
     gpio.GPIO_Pin  = GPIO_Pin_1;
     gpio.GPIO_Mode = GPIO_Mode_AN;
     gpio.GPIO_PuPd = GPIO_PuPd_NOPULL;
@@ -40,10 +40,15 @@ void ADC3_init(void){
     adc.ADC_NbrOfRegChannel = 1;
     ADC_Init(ADC3, &adc);
 
-    ADC_RegularChannelConfig(ADC3, ADC_Channel_2, 1, ADC_SampleTime_19Cycles5);
+    ADC_RegularChannelConfig(ADC3, ADC_Channel_1, 1, ADC_SampleTime_19Cycles5);
 
     /* Calibration & enable */
-    ADC_Cmd(ADC3, ENABLE);
+    ADC_VoltageRegulatorCmd(ADC3, ENABLE);
+    // Wait for regulator to power on
+    for (volatile int i = 0; i < 1000; ++i) __NOP();   // ~10 µs wait time
     ADC_StartCalibration(ADC3);
     while (ADC_GetCalibrationStatus(ADC3)) {}
+    ADC_Cmd(ADC3, ENABLE);
+
+    while (ADC_GetFlagStatus(ADC3, ADC_FLAG_RDY) == RESET);
 }

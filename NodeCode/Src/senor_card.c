@@ -8,20 +8,7 @@
 //---------------------------------------
 // Inclusions and definitions
 //---------------------------------------
-#include <cmsis_lib/stm32f30x_adc.h>
-#include <cmsis_lib/stm32f30x_dma.h>
-#include "string.h"
-#include <extern_dekl_globale_variablar.h>
-#include "stm32f3_discovery/stm32f3_discovery_lsm303dlhc.h"
-
-//---------------------------------------
-// Function prototypes
-//---------------------------------------
-void sensor_card_logic(void);
-void get_accelerometerdata(void);
-uint16_t convert_sensordata(void);
-void construct_data(void);
-void send_data(void);
+#include <metodar/sensor_card.h>
 
 //---------------------------------------
 // Function definitions
@@ -33,7 +20,12 @@ void send_data(void);
  */
 void sensor_card_logic(void){
 	sample_time++;
+	if (slow_blink > 9){
+		GPIOE->ODR = GPIOE->ODR ^ 0x1000;
+		slow_blink = 0;
+	}
 	get_accelerometerdata();
+	ADC_StartConversion(ADC3);
 	sensor_data = ADC_GetConversionValue(ADC3);
 	distance = convert_sensordata();
 	construct_data();
@@ -80,35 +72,34 @@ uint16_t convert_sensordata(void){
 }
 
 void construct_data(void){
-	/*
-	data[0] = xxx;
-	data[1] = xxx;
-	data[2] = xxx;
-	data[3] = xxx;
-	data[4] = xxx;
-	data[5] = xxx;
-	data[6] = xxx;
-	data[7] = xxx;
-	data[8] = xxx;
-	data[9] = xxx;
-	*/
+
+	data[0] = sample_time;
+	data[1] = distance & 0xFF;
+	data[2] = (distance >> 8) & 0xFF;
+	data[3] = a_xf_k & 0xFF;
+	data[4] = (a_xf_k >> 8) & 0xFF;
+	data[5] = a_yf_k & 0xFF;
+	data[6] = (a_yf_k >> 8) & 0xFF;
+	data[7] = a_zf_k & 0xFF;
+	data[8] = (a_zf_k >> 8) & 0xFF;
+
 }
 
 void send_data(void){
 
-	// 1️. Copy the payload into the static buffer
+	// 1️. Make sure the DMA channel is idle
+	DMA_Cmd(DMA1_Channel2, DISABLE);
+	// Wait for disable
+	while (DMA1_Channel2->CCR & DMA_CCR_EN) {__NOP();}
+
+	// 2️. Copy the payload into the static buffer
 	// Fast RAM to RAM copy
 	memcpy(transmit_buffer, data, buffer_size);
 
-	// 2️. Make sure the DMA channel is idle
-	DMA_Cmd(DMA1_Channel2, DISABLE);
-	// Wait for disable
-	while (DMA_GetITStatus(DMA1_IT_GL2)) __NOP;
-
 	// 3️. Tell the DMA how many bytes to move this time
-	// DMA1_Channel2->CNDTR = buffer_size;
+	DMA1_Channel2->CNDTR = buffer_size;
 
-	// 4️. (Re)enable the channel – the transfer starts immediately
+	// 4. (Re)enable the channel – the transfer starts immediately
 	DMA_Cmd(DMA1_Channel2, ENABLE);
 
 	return;

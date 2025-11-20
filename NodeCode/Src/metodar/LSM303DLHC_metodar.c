@@ -11,7 +11,7 @@
 
 #include <cmsis_boot/stm32f30x.h>
 
-#include "../stm32f3_discovery/stm32f3_discovery_lsm303dlhc.h"
+#include <stm32f3_discovery/stm32f3_discovery_lsm303dlhc.h>
 
 
 //---------------------------------------
