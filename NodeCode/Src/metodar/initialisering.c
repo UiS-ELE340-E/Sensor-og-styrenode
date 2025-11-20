@@ -53,8 +53,9 @@ void init(void) {
 	USART2_init();
  	USART3_init();
 	TIM2_init();
+	TIM3_init();
 	TIM4_init();
-	ADC3_init();
+//	ADC3_init();
 	SysTick_init(1000);
 	interrupt_init();
 
@@ -153,3 +154,4 @@ void set_LED(uint8_t status){
 		GPIOE->ODR = GPIOE->ODR ^ 0x0100;
 	}
 }
+

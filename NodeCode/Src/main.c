@@ -14,6 +14,7 @@
 #include <dekl_globale_variablar.h>
 #include "stm32f3_discovery/stm32f3_discovery_lsm303dlhc.h"
 #include <metodar/sensor_card.h>
+#include <metodar/control_card.h>
 
 //---------------------------------------
 // Global variables
@@ -26,7 +27,7 @@
 void init(void);
 void test_code(void);
 
-void control_card_logic(void);
+//void control_card_logic(void);
 
 void GPIO_sjekk_brytar(void);
 void GPIO_sett_kompassmoenster(int8_t verdi);
