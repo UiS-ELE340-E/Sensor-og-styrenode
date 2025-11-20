@@ -36,7 +36,7 @@ void get_accelerometerdata(void){
 	uint16_t a;
 
 	// OUT_X_L_A is stored on the lowest address in XYZ-register in the circuit
-	//LSM303DLHC_Read(ACC_I2C_ADDRESS, LSM303DLHC_OUT_X_L_A, buffer, 6);
+	LSM303DLHC_Read(ACC_I2C_ADDRESS, LSM303DLHC_OUT_X_L_A, buffer, 6);
 
 	// Build accelerometer data.
 	/* Buffer 1 is MSByte (from data sheet). Make the relevant 12 bits into integer.
@@ -76,13 +76,12 @@ void construct_data(void){
 	data[0] = sample_time;
 	data[1] = distance & 0xFF;
 	data[2] = (distance >> 8) & 0xFF;
-	data[3] = 0;
-	data[4] = 0;
-	data[5] = 0;
-	data[6] = 0;
-	data[7] = 0;
-	data[8] = 0;
-	data[9] = 0;
+	data[3] = a_xf_k & 0xFF;
+	data[4] = (a_xf_k >> 8) & 0xFF;
+	data[5] = a_yf_k & 0xFF;
+	data[6] = (a_yf_k >> 8) & 0xFF;
+	data[7] = a_zf_k & 0xFF;
+	data[8] = (a_zf_k >> 8) & 0xFF;
 
 }
 
