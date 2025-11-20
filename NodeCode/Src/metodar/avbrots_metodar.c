@@ -91,6 +91,9 @@ void DMA1_CH2_IRQHandler(void){
 	if (DMA_GetITStatus(DMA1_IT_TE2) != RESET){
 		GPIOE->BSRR = (1 << 10);
 	}
+	if (DMA_GetITStatus(DMA1_IT_TC2) != RESET){
+		DMA_ClearITPendingBit(DMA1_IT_TC2);
+	}
 }
 
 void DMA1_CH3_IRQHandler(void){
