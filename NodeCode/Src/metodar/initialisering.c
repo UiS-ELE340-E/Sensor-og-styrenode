@@ -22,6 +22,7 @@ void init(void);
 void enable(uint8_t node);
 uint8_t control_or_sensor(void);
 uint8_t cable_or_BLT(void);
+void set_LED(uint8_t status);
 
 void GPIO_oppstart(void);
 void SysTick_init(uint32_t hz);
@@ -40,6 +41,9 @@ void ADC3_init(void);
 //---------------------------------------
 void init(void) {
 	GPIO_oppstart();
+
+	set_LED(8);
+
 	SPI1_oppstart();
 	SPI2_oppstart();
 	Exp_click_sokkel1_oppstart();
@@ -48,8 +52,6 @@ void init(void) {
 	USART1_init();
 	USART2_init();
  	USART3_init();
- 	USART3_DMA_init(1);
- 	USART3_DMA_init(0);
 	TIM2_init();
 	TIM3_init();
 	TIM4_init();
@@ -58,9 +60,11 @@ void init(void) {
 	interrupt_init();
 
 	// Check node type
-//    node = control_or_sensor();
+    node = control_or_sensor();
+    // Check communication type
+    communication = cable_or_BLT();
     // Enable node specific peripherals
-    //enable(node);
+    enable(node);
 
     //enable(0);
     //enable(1);
@@ -68,7 +72,6 @@ void init(void) {
 }
 
 uint8_t control_or_sensor(void){
-	while (ADC_GetFlagStatus(ADC3, ADC_CR_ADEN) == RESET);
 	// Start ADC conversion
 	ADC_StartConversion(ADC3);
 
@@ -78,7 +81,7 @@ uint8_t control_or_sensor(void){
 	// Read the converted value
 	sensor_data = ADC_GetConversionValue(ADC3);
 
-	if (sensor_data == 0){
+	if (sensor_data < 50){
 		// Control node
 		ADC_Cmd(ADC3, DISABLE);
 		return 0;
@@ -89,11 +92,12 @@ uint8_t control_or_sensor(void){
 	}
 }
 
-uint8_t calbe_or_BLT(void){
+uint8_t cable_or_BLT(void){
 	// Test communication
-	communication = 0;
+	// Now always set to cable
+	uint8_t com = 0;
 
-	if (communication == 0){
+	if (com == 0){
 		// Cable communication
 		return 0;
 	}
@@ -107,21 +111,47 @@ void enable(uint8_t node){
 	if (node == 0){
 		// Control node
 		TIM4_deactivate();
-		if (communication == 0){
-			USART3_DMA_enable(0);
-		}
-		else{
-			USART1_DMA_enable(0);
-		}
 	}
 	else if (node == 1){
 		// Sensor node
-		if (communication == 0){
-			USART3_DMA_enable(1);
-		}
-		else{
-			USART1_DMA_enable(1);
-		}
+		SysTick_init(100);
+	}
+	if (communication == 0){
+		USART3_DMA_init(node);
+		USART3_DMA_enable(node);
+	}
+	else{
+		USART1_DMA_enable(node);
+	}
+	set_LED(node);
+}
+
+void set_LED(uint8_t status){
+	if (status == 0) {
+		GPIOE->ODR = GPIOE->ODR ^ 0x0400;
+		GPIOE->ODR = GPIOE->ODR ^ 0x0800;
+		GPIOE->ODR = GPIOE->ODR ^ 0x1000;
+		GPIOE->ODR = GPIOE->ODR ^ 0x4000;
+		GPIOE->ODR = GPIOE->ODR ^ 0x8000;
+		GPIOE->ODR = GPIOE->ODR ^ 0x0100;
+	}
+	else if (status == 1) {
+		GPIOE->ODR = GPIOE->ODR ^ 0x0200;
+		GPIOE->ODR = GPIOE->ODR ^ 0x0400;
+		GPIOE->ODR = GPIOE->ODR ^ 0x1000;
+		GPIOE->ODR = GPIOE->ODR ^ 0x2000;
+		GPIOE->ODR = GPIOE->ODR ^ 0x4000;
+		GPIOE->ODR = GPIOE->ODR ^ 0x0100;
+	}
+	else{
+		GPIOE->ODR = GPIOE->ODR ^ 0x0200;
+		GPIOE->ODR = GPIOE->ODR ^ 0x0400;
+		GPIOE->ODR = GPIOE->ODR ^ 0x0800;
+		GPIOE->ODR = GPIOE->ODR ^ 0x1000;
+		GPIOE->ODR = GPIOE->ODR ^ 0x2000;
+		GPIOE->ODR = GPIOE->ODR ^ 0x4000;
+		GPIOE->ODR = GPIOE->ODR ^ 0x8000;
+		GPIOE->ODR = GPIOE->ODR ^ 0x0100;
 	}
 }
 

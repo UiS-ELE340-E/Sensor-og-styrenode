@@ -48,6 +48,9 @@ extern uint16_t sensor_data;
 
 extern uint8_t communication;
 
+extern uint8_t new_sample;
+extern 	uint8_t slow_blink;
+
 // DMA transfer variables
 #define buffer_size 9
 extern uint8_t transmit_buffer[buffer_size];		//USART 1

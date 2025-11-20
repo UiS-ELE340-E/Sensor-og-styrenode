@@ -34,7 +34,7 @@
 #include <cmsis_lib/stm32f30x_spi.h>
 #include <cmsis_lib/stm32f30x_tim.h>
 #include <cmsis_lib/stm32f30x_usart.h>
-#include "stm32f3_discovery_lsm303dlhc.h"
+#include <stm32f3_discovery/stm32f3_discovery_lsm303dlhc.h>
 
 /** @addtogroup Utilities
   * @{

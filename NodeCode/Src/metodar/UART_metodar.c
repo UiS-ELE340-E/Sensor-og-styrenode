@@ -158,7 +158,6 @@ void USART3_init(void)
 {
     // --- Enable peripheral clocks ---
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA2, ENABLE);
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOD, ENABLE);
 
     // --- Configure USART3 clock settings ---
@@ -198,32 +197,40 @@ void USART3_init(void)
 }
 
 void USART3_DMA_init(uint8_t Tx){
+	// --- Enable peripheral clocks ---
+	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
+	// --- Deinitialize DMA1 channel 2 and 3 ---
+	DMA_DeInit(DMA1_Channel2);
+    DMA_DeInit(DMA1_Channel3);
     // --- Configure DMA ---
     DMA_InitTypeDef DMA_InitStructure;
-    if (Tx == 1){
-    	DMA_DeInit(DMA1_Channel2);
-    }
-    else{
-    	DMA_DeInit(DMA1_Channel3);
-    }
-    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&USART3->RDR;
     DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)transmit_buffer;
-    DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;
     DMA_InitStructure.DMA_BufferSize = buffer_size;
     DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
     DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
     DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
-    DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
     DMA_InitStructure.DMA_Priority = DMA_Priority_High;
     DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
     if (Tx == 1){
+        DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&USART3->TDR;
+        DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;
+        DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
     	DMA_Init(DMA1_Channel2, &DMA_InitStructure);
         // Enable the TX-complete / error interrupts
-        DMA_ITConfig(DMA1_Channel2, DMA_ISR_TCIF2 | DMA_ISR_TEIF2, ENABLE);
-        NVIC_EnableIRQ(DMA1_Channel2_IRQn);    }
+        DMA_ITConfig(DMA1_Channel2, DMA_ISR_TCIF1 | DMA_ISR_TEIF1, ENABLE);
+        NVIC_SetPriority(DMA1_Channel2_IRQn, 1);
+		NVIC_EnableIRQ(DMA1_Channel2_IRQn);
+    }
     else{
+        DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&USART3->RDR;
+        DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
+        DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
     	DMA_Init(DMA1_Channel3, &DMA_InitStructure);
+        // Enable the RX-complete / error interrupts
+        DMA_ITConfig(DMA1_Channel3, DMA_ISR_TCIF1 | DMA_ISR_TEIF1, ENABLE);
+        NVIC_SetPriority(DMA1_Channel3_IRQn, 1);
+        NVIC_EnableIRQ(DMA1_Channel3_IRQn);
     }
 }
 
@@ -242,7 +249,7 @@ void USART3_DMA_enable(uint8_t Tx){
 
 	if (Tx == 0){
 	    // --- Enable DMA RX ---
-	    DMA_Cmd(DMA2_Channel3, ENABLE);
+	    DMA_Cmd(DMA1_Channel3, ENABLE);
 	}
 }
 

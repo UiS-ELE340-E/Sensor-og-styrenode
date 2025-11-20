@@ -13,9 +13,11 @@
 //---------------------------------------
 #include <cmsis_lib/stm32f30x_adc.h>
 #include <cmsis_lib/stm32f30x_dma.h>
+#include <cmsis_lib/stm32f30x_i2c.h>
 #include "string.h"
 #include <extern_dekl_globale_variablar.h>
-//#include "stm32f3_discovery/stm32f3_discovery_lsm303dlhc.h"
+#include <stm32f3_discovery/stm32f3_discovery_lsm303dlhc.h>
+
 
 //---------------------------------------
 // Function prototypes

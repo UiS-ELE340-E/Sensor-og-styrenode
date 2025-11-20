@@ -42,6 +42,8 @@ volatile uint8_t USART3_rx_irq;
 // Node: Control == 0, Sensor == 1
 uint8_t node = 0;
 
+uint8_t new_sample;
+uint8_t slow_blink;
 // Distance sensor data
 //---------------------------------------
 uint16_t sensor_data;
