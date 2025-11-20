@@ -12,7 +12,7 @@
 #include <cmsis_boot/stm32f30x.h>
 #include "string.h"
 #include <extern_dekl_globale_variablar.h>
-#include <metodar/control_card.h>
+//#include <metodar/control_card.h>
 //---------------------------------------
 // Function prototypes
 //---------------------------------------
@@ -32,15 +32,15 @@ void control_card_logic(void){
 	if (slow_blink > 9){
 		GPIOE->ODR = GPIOE->ODR ^ 0x1000;
 		slow_blink = 0;
-	}
+	}/*
 	data_from_sensor_card;
 	PID_calculation;
-	power_delivery;
+	power_delivery;*/
 
 }
 
 
-
+/*
 void PID_calculation(void){
 	float a;					// Filter parameter
 	float ymf;					// Filter quantity to D-ledd
@@ -107,7 +107,7 @@ void data_from_sensor_card(void){			// need to make an interrupt
 
 
 }
-
+*/
 
 
 
