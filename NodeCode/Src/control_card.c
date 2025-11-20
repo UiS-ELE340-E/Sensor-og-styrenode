@@ -26,5 +26,8 @@ void control_card_logic(void);
  * 	@retval	None
  */
 void control_card_logic(void){
-
+	if (slow_blink > 9){
+		GPIOE->ODR = GPIOE->ODR ^ 0x1000;
+		slow_blink = 0;
+	}
 }

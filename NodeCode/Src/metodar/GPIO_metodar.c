@@ -104,13 +104,13 @@ void GPIO_oppstart(void)  {
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
 
   //Konfigurer GPIO_pinnen PC6 som er brukt til testing av avbrotsmetoden for SysTick.
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_Level_1;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
 
-  //Initialiser, dvs. last ned konfigurasjonen i modulen
+	//Initialiser, dvs. last ned konfigurasjonen i modulen
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 
 }

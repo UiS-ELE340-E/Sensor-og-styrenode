@@ -219,7 +219,7 @@ void USART3_DMA_init(uint8_t Tx){
     	DMA_Init(DMA1_Channel2, &DMA_InitStructure);
         // Enable the TX-complete / error interrupts
         DMA_ITConfig(DMA1_Channel2, DMA_ISR_TCIF1 | DMA_ISR_TEIF1, ENABLE);
-        //NVIC_SetPriority(DMA1_Channel2_IRQn, 0);
+        NVIC_SetPriority(DMA1_Channel2_IRQn, 1);
 		NVIC_EnableIRQ(DMA1_Channel2_IRQn);
     }
     else{
@@ -229,7 +229,7 @@ void USART3_DMA_init(uint8_t Tx){
     	DMA_Init(DMA1_Channel3, &DMA_InitStructure);
         // Enable the RX-complete / error interrupts
         DMA_ITConfig(DMA1_Channel3, DMA_ISR_TCIF1 | DMA_ISR_TEIF1, ENABLE);
-        //NVIC_SetPriority(DMA1_Channel3_IRQn, 0);
+        NVIC_SetPriority(DMA1_Channel3_IRQn, 1);
         NVIC_EnableIRQ(DMA1_Channel3_IRQn);
     }
 }

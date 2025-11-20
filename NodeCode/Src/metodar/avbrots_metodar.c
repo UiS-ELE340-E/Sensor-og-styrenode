@@ -88,20 +88,29 @@ void USART3_EXTI28_IRQHandler(void) {
 }
 
 void DMA1_CH2_IRQHandler(void){
+	//GPIOC->ODR = GPIOC->ODR ^ GPIO_Pin_7;
+
 	if (DMA_GetITStatus(DMA1_IT_TE2) != RESET){
 		GPIOE->BSRR = (1 << 10);
+		DMA_ClearITPendingBit(DMA1_IT_TE2);
 	}
 	if (DMA_GetITStatus(DMA1_IT_TC2) != RESET){
+		slow_blink++;
 		DMA_ClearITPendingBit(DMA1_IT_TC2);
 	}
 }
 
 void DMA1_CH3_IRQHandler(void){
+	if (DMA_GetITStatus(DMA1_IT_TE3) != RESET){
+		GPIOE->BSRR = (1 << 10);
+		DMA_ClearITPendingBit(DMA1_IT_TE3);
+	}
 	if (DMA_GetITStatus(DMA1_IT_TC3) != RESET){
 		for (int i = 0; i < 9; ++i){
 			data[i] = transmit_buffer[i];
 		}
-		GPIOE->BSRR = (1 << 10);
+		slow_blink++;
+		DMA_ClearITPendingBit(DMA1_IT_TC3);
 	}
 
 }
@@ -110,15 +119,16 @@ void DMA1_CH3_IRQHandler(void){
 // for avbrot fraa SysTick-taimeren
 //----------------------------------------------------------------
 void SysTick_Handler(void) {
-	uint8_t kommando = 0;
+	//uint8_t kommando = 0;
 
 	if (node == 0){
 
 	}
 	else if (node == 1){
 		new_sample = 1;
+		//GPIOC->ODR = GPIOC->ODR ^ GPIO_Pin_6; // Blinkesignal ut paa testpinne (PC6).
 	}
-
+/*
 	tikkteljar_avprelling++;
 	if(tikkteljar_avprelling >= 10) { //Har det gått 10 x 1 millisek sidan siste
 		                              // brytaravlesing, så les brytarnivå og sjekk om
@@ -150,7 +160,6 @@ void SysTick_Handler(void) {
 		tikkteljar_diodar = 0;
 	}
 
-	GPIOC->ODR = GPIOC->ODR ^ GPIO_Pin_6; // Blinkesignal ut paa testpinne (PC6).
 
 
   //Sjekk om det er ny kommando fr� tastatur
@@ -164,5 +173,5 @@ void SysTick_Handler(void) {
 		send_maalingar_til_loggar = 0;
 		legg_til_meldingshale = 1;
 
-	}
+	}*/
 }
