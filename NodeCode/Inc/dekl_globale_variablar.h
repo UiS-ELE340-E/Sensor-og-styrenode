@@ -19,8 +19,8 @@ uint16_t prescalar;
 uint16_t period;
 uint16_t puls;
 //PID
-uint16_t error;				// Error
-uint16_t error_past = 0;
+int16_t error;				// Error
+int16_t error_past = 0;
 uint16_t up;				// Proportional quantity
 uint16_t ui; 				// Integrator quantity
 uint16_t ui_past = 0;
@@ -30,7 +30,7 @@ uint16_t u;					// Power parameter
 
 uint8_t IR_sensor_data_mask = 0b00000000; // needs to find out what bit i need from IR-sensor
 uint8_t accelerometer_data_mask = 0b00000000; // needs to find out what bit i need from accelerometer
-uint8_t distance_calculation;
+uint16_t reference;
 
 // Interrupt variables
 //---------------------------------------

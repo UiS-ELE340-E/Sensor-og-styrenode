@@ -320,13 +320,35 @@ void USART2_send_tid8_og_data16(uint8_t tid, int16_t loggeverdi)  {
 	data3 = data2 >> 4;
 
 	USART_skriv(USART2,'L');            // L for loggedata
-	USART_skriv(USART2,(uint8_t)(hex2ascii_tabell[(data3 & 0x000F)])); // Send MS Hex-siffer av 16-bitsdata
+	USART_skriv(USART2,(uint8_t)(hex2ascii_tabell[(data3 & 0x000F)])); 	// Send MS Hex-siffer av 16-bitsdata
 	USART_skriv(USART2,(uint8_t)(hex2ascii_tabell[(data2 & 0x000F)]));
 	USART_skriv(USART2,(uint8_t)(hex2ascii_tabell[(data1 & 0x000F)]));
-	USART_skriv(USART2,(uint8_t)(hex2ascii_tabell[(data0 & 0x000F)])); // Send LS Hex-siffer av dei 16 bitane
+	USART_skriv(USART2,(uint8_t)(hex2ascii_tabell[(data0 & 0x000F)]));	// Send LS Hex-siffer av dei 16 bitane
+}
+void USART2_send_tid8_og_data16x9_PC(uint8_t tid){	// This is being used to send data from control node to the PC
+	uint8_t tid0, tid1;
+	tid0 = tid;
+	tid1 = tid0 >> 4;
+
+	USART_skriv(USART2,'T');
+	USART_skriv(USART2,(uint8_t)(hex2ascii_tabell[(tid1 & 0x0F)]));   // Send MS Hex-siffer av ein tidsbyten
+	USART_skriv(USART2,(uint8_t)(hex2ascii_tabell[(tid0 & 0x0F)])); // Send LS Hex-siffer av ein tidsbyten
+
+	USART_skriv(USART2,'r');
+	USART_skriv(USART2,data);
+	USART_skriv(USART2,'E');
+	USART_skriv(USART2,error);
+	USART_skriv(USART2,'u');
+	USART_skriv(USART2,u);
+	USART_skriv(USART2,'P');
+	USART_skriv(USART2,up);
+	USART_skriv(USART2,'I');
+	USART_skriv(USART2,ui);
+	USART_skriv(USART2,'D');
+	USART_skriv(USART2,ud);
 }
 
-void USART2_send_tid8_og_data16x3(uint8_t tid, int16_t loggeverdi1, int16_t loggeverdi2, int16_t loggeverdi3)  {
+void USART2_send_tid8_og_data16x3(uint8_t tid, int16_t loggeverdi1, int16_t loggeverdi2, int16_t loggeverdi3){
 	uint8_t tid0, tid1;
     int16_t data0, data1, data2, data3;
 

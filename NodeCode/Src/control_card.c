@@ -16,7 +16,7 @@
 //---------------------------------------
 // Function prototypes
 //---------------------------------------
-void control_card_logic(void);
+
 
 
 //---------------------------------------
@@ -33,33 +33,36 @@ void control_card_logic(void){
 		GPIOE->ODR = GPIOE->ODR ^ 0x1000;
 		slow_blink = 0;
 	}
-	data_from_sensor_card;
-	PID_calculation;
-	power_delivery;
-
+	data_from_sensor_card();
+	PID_calculation();
+	power_delivery();
+	send_data_to_PC();
 }
 
+// Extracting the data from sensor card (UART1)
+void data_from_sensor_card(void){	//only taking the distance
+	distance = data[2];
+	distance = (distance << 8) | data[2];
+}
 
 
 void PID_calculation(void){
 	float a;					// Filter parameter
 	float ymf;					// Filter quantity to D-ledd
 	float ymf_past = 0;
-	float Tf = (1.0/(2*3.14));		// Time frequancy
+	float Tf = (1.0/(2*3.14));	// Time frequancy
 	float Ts = Tf/5;
-	int16_t ui_max = 65535;
-	int16_t u_max = 65532;
-	float kp = 1;				// Proportinal parameter
+	uint16_t ui_max = 65532;		// Max power from integral
+	uint16_t u_max = 65532;		// Max power total
+	float kp = 10;				// Proportinal parameter
 	float Ti = 0;				// Integrator parameter
 	float Td = 0;				// Derivator parameter
-	uint16_t yr = 5;			// Reference
-	uint16_t ym = 2;			// Actual placement
+	uint16_t yr = 300; //reference;		// Reference
+	uint16_t ym = 200; //distance;		// Actual placement. it will be between 0 and 1500
 
 
 	error = yr-ym;
-	if (error <= 5){
-		error = 0;
-	}
+
 
 	a = Tf/(Tf+Ts);											// Filter parameter
 
@@ -83,10 +86,14 @@ void PID_calculation(void){
 	if (u >= u_max){										// Power restriction
 		u = u_max;
 	}
+	if (error <= 5){
+		u = 0;
+	}
 
 	error_past = error;
 	ui_past = ui;
 	ymf_past = ymf;
+
 
 }
 
@@ -98,15 +105,13 @@ void power_delivery(void){
 	puls = (period+1)/2;		// Needs to be half of the period
 }
 
-
-
-// Extracting the data from sensor card (UART1)
-void data_from_sensor_card(void){			// need to make an interrupt
-	distance_calculation = IR_sensor_data_mask & distance_calculation;
-
-
+void send_data_to_PC(void){
 
 }
+
+
+
+
 
 
 
