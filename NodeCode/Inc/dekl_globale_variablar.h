@@ -26,6 +26,7 @@ uint16_t ui; 				// Integrator quantity
 uint16_t ui_past = 0;
 uint16_t ud;				// Derivator quantity
 uint16_t u;					// Power parameter
+uint8_t direction;			// Direction pointer to LinMot
 
 
 uint8_t IR_sensor_data_mask = 0b00000000; // needs to find out what bit i need from IR-sensor

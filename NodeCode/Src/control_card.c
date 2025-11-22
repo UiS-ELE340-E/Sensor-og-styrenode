@@ -54,7 +54,7 @@ void PID_calculation(void){
 	float Ts = Tf/5;
 	uint16_t ui_max = 65532;		// Max power from integral
 	uint16_t u_max = 65532;		// Max power total
-	float kp = 10;				// Proportinal parameter
+	float kp = 1000;				// Proportinal parameter
 	float Ti = 0;				// Integrator parameter
 	float Td = 0;				// Derivator parameter
 	uint16_t yr = 300; //reference;		// Reference
@@ -62,7 +62,6 @@ void PID_calculation(void){
 
 
 	error = yr-ym;
-
 
 	a = Tf/(Tf+Ts);											// Filter parameter
 
@@ -91,6 +90,7 @@ void PID_calculation(void){
 	}
 
 	error_past = error;
+
 	ui_past = ui;
 	ymf_past = ymf;
 
@@ -105,8 +105,25 @@ void power_delivery(void){
 	puls = (period+1)/2;		// Needs to be half of the period
 }
 
-void send_data_to_PC(void){
 
+void send_power_to_LinMot(void){	// TIM3 is sending the power to the LinMot and this say if it goes in positive or negative direction
+	if (error >0){
+		GPIOB->ODR = GPIOB->ODR | 0x0020;
+	}
+	else{
+		GPIOB->ODR = !(GPIOB->ODR | 0x0020);
+	}
+}
+
+
+void send_data_to_PC(void){
+	if(send_maaling) {
+		samplenr++;
+
+		//USART2_send_tid8_og_data16x9_PC(samplenr);
+
+		 send_maaling = 0;
+	}
 }
 
 

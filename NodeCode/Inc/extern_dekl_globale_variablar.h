@@ -26,7 +26,7 @@ extern uint16_t ui; 				// Integrator quantity
 extern uint16_t ui_past;
 extern uint16_t ud;					// Derivator quantity
 extern uint16_t u;					// Power parameter
-
+extern uint8_t direction;			// Direction pointer to LinMot
 
 extern uint8_t IR_sensor_data_mask;
 extern uint8_t accelerometer_data_mask;

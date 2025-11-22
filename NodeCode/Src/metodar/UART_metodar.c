@@ -303,6 +303,8 @@ void USART_skriv_streng(USART_TypeDef* USARTx,uint8_t *streng)
     }
 }
 
+
+
 void USART2_send_tid8_og_data16(uint8_t tid, int16_t loggeverdi)  {
 	uint8_t tid0, tid1;
     int16_t data0, data1, data2, data3;
@@ -334,8 +336,8 @@ void USART2_send_tid8_og_data16x9_PC(uint8_t tid){	// This is being used to send
 	USART_skriv(USART2,(uint8_t)(hex2ascii_tabell[(tid1 & 0x0F)]));   // Send MS Hex-siffer av ein tidsbyten
 	USART_skriv(USART2,(uint8_t)(hex2ascii_tabell[(tid0 & 0x0F)])); // Send LS Hex-siffer av ein tidsbyten
 
-	USART_skriv(USART2,'r');
-	USART_skriv(USART2,data);
+	USART_skriv(USART2,'C');
+	//USART_skriv(USART2,data);
 	USART_skriv(USART2,'E');
 	USART_skriv(USART2,error);
 	USART_skriv(USART2,'u');

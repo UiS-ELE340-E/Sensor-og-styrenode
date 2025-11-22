@@ -135,11 +135,12 @@ void TIM4_deactivate(void){
 void TIM3_init(void){
     // --- Enable peripheral clocks ---
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
-//*    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOD, ENABLE); // | RCC_AHBPeriph_AFIO
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE); // | RCC_AHBPeriph_AFIO
 
     // --- Configure TIM4 settings ---
     TIM_TimeBaseInitTypeDef TIM3Setup;
     TIM3Setup.TIM_Prescaler = prescalar;         // Gives 1 MHz = 1 us if 71
+
     TIM3Setup.TIM_CounterMode = TIM_CounterMode_Up;
     TIM3Setup.TIM_Period = period;           // Count up to --- us
     TIM3Setup.TIM_ClockDivision = 0;
@@ -155,11 +156,11 @@ void TIM3_init(void){
 
     // --- Configure TIM3 to PD12 ---
     GPIO_InitTypeDef GPIO_InitStructure_TIM3;
-//*    GPIO_InitStructure_TIM3.GPIO_Pin = GPIO_Pin_12;
+    GPIO_InitStructure_TIM3.GPIO_Pin = GPIO_Pin_4;
     GPIO_InitStructure_TIM3.GPIO_Mode = GPIO_Mode_AF;
     GPIO_InitStructure_TIM3.GPIO_Speed = GPIO_Speed_Level_1;
     GPIO_InitStructure_TIM3.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-//*    GPIO_Init(GPIOD, &GPIO_InitStructure_TIM3);
+    GPIO_Init(GPIOB, &GPIO_InitStructure_TIM3);
     // Alternate function for TIM3
 //*    GPIO_PinAFConfig(GPIOD, GPIO_PinSource12, GPIO_AF_2); //.
 

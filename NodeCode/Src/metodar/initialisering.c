@@ -60,7 +60,7 @@ void init(void) {
 	interrupt_init();
 
 	// Check node type
-    node = control_or_sensor();
+    node = 0;//control_or_sensor();
     // Check communication type
     communication = cable_or_BLT();
     // Enable node specific peripherals
