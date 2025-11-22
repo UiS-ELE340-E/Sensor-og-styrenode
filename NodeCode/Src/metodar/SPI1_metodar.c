@@ -135,7 +135,7 @@ void gyro_oppstart(void) {  // Skriving til kontrollregister
 	while(SPI1->SR & SPI_SR_BSY);
     GPIOE->ODR = GPIOE->ODR | GPIO_Pin_3;
 
-    while(SPI1->SR & SPI_SR_RXNE) {  //T�m mottaksbuffer
+    while(SPI1->SR & SPI_SR_RXNE) {  //Tøm mottaksbuffer
 
        j = SPI_ReceiveData8(SPI1);
     }

@@ -12,6 +12,7 @@
 #include <cmsis_lib/stm32f30x_gpio.h>
 #include <cmsis_lib/stm32f30x_usart.h>
 #include <cmsis_lib/stm32f30x_dma.h>
+#include <string.h>
 #include <extern_dekl_globale_variablar.h>
 
 //---------------------------------------
@@ -106,9 +107,6 @@ void DMA1_CH3_IRQHandler(void){
 		DMA_ClearITPendingBit(DMA1_IT_TE3);
 	}
 	if (DMA_GetITStatus(DMA1_IT_TC3) != RESET){
-		for (int i = 0; i < 9; ++i){
-			data[i] = transmit_buffer[i];
-		}
 		memcpy(data, transmit_buffer, buffer_size);
 		slow_blink++;
 		DMA_ClearITPendingBit(DMA1_IT_TC3);

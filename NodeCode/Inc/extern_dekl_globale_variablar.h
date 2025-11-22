@@ -35,7 +35,12 @@ extern uint8_t distance_calculation;
 // Distance sensor data
 //---------------------------------------
 extern uint16_t sensor_data;
+extern uint16_t sensor_data_[10];
+extern uint32_t sensor_data_mean;
 extern uint16_t distance;
+
+// Sensor specific variables
+extern uint16_t dist_convertion[3101];
 
 // Interrupt variables
 //---------------------------------------

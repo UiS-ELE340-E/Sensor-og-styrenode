@@ -19,15 +19,22 @@
  * 	@retval	None
  */
 void sensor_card_logic(void){
+	uint32_t sum =0;
 	sample_time++;
 	if (slow_blink > 9){
 		GPIOE->ODR = GPIOE->ODR ^ 0x1000;
 		slow_blink = 0;
+		/* Calculate mean of 10 sensor data samples
+		for (int i = 0; i < 10; ++i)
+			sum += sensor_data_[i];
+		sensor_data_mean = sum / 10;
+		sum = 0;*/
 	}
 	get_accelerometerdata();
 	ADC_StartConversion(ADC3);
 	sensor_data = ADC_GetConversionValue(ADC3);
-	distance = convert_sensordata();
+	//sensor_data_[slow_blink] = sensor_data;
+	distance = dist_convertion[sensor_data];
 	construct_data();
 	send_data();
 }
@@ -63,12 +70,6 @@ void get_accelerometerdata(void){
 
 	a_zf_k = (a1*a_zf_k_1 + b1*a_z)/100;
 	a_zf_k_1 = a_zf_k;
-}
-
-uint16_t convert_sensordata(void){
-	uint16_t dist = (3000 * sensor_data) / 4096;
-
-	return dist;
 }
 
 void construct_data(void){
