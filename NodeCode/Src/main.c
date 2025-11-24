@@ -52,7 +52,11 @@ int main(void)  {
     //test_code();
 
     while(node == 0) {
-    	control_card_logic();
+    	if (new_sample ==1) {
+    		control_card_logic();
+    		new_sample = 0;
+    	}
+
     }
     while(node == 1) {
     	//__WFI();
