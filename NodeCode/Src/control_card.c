@@ -36,6 +36,7 @@ void control_card_logic(void){
 	data_from_sensor_card();
 	PID_calculation();
 	power_delivery();
+	send_power_to_LinMot();
 	send_data_to_PC();
 }
 
@@ -54,11 +55,11 @@ void PID_calculation(void){
 	float Ts = Tf/5;
 	uint16_t ui_max = 65532;		// Max power from integral
 	uint16_t u_max = 65532;		// Max power total
-	float kp = 1000;				// Proportinal parameter
+	float kp = 50.0;				// Proportinal parameter
 	float Ti = 0;				// Integrator parameter
 	float Td = 0;				// Derivator parameter
-	uint16_t yr = 300; //reference;		// Reference
-	uint16_t ym = 200; //distance;		// Actual placement. it will be between 0 and 1500
+	uint32_t yr = 200; //reference;		// Reference
+	uint32_t ym = distance; //distance;		// Actual placement. it will be between 0 and 1500
 
 
 	error = yr-ym;
@@ -97,22 +98,55 @@ void PID_calculation(void){
 
 }
 
-// Calculating the different variables to change TIM3
-void power_delivery(void){
+void TIM3_setFrequency(uint32_t freq_hz)
+{
+    if (freq_hz < 1000)     freq_hz = 1000;
+    if (freq_hz > 250000)   freq_hz = 250000;
 
-	prescalar = 71;				// Gives 1 MHz = 1 us if 71
-	period = ~u; 				// Needs a frequency at 0-250kHz: 3 gives 250kHz and bigger gives less and less
-	puls = (period+1)/2;		// Needs to be half of the period
+    uint32_t timer_clk = 72000000;
+
+    // PSC beregnes matematisk uten loops
+    uint32_t psc = (timer_clk + (freq_hz * 65536UL) - 1) / (freq_hz * 65536UL);
+    if (psc > 0) psc -= 1;     // formelen gir PSC+1, så trekk fra 1
+
+    // Beregn ARR
+    uint32_t arr = (timer_clk / ((psc + 1) * freq_hz)) - 1;
+
+    // Oppdater timer
+    TIM3->CR1 &= ~TIM_CR1_CEN;     // stopp timer
+    TIM3->PSC = psc;
+    TIM3->ARR = arr;
+    TIM3->EGR = TIM_EGR_UG;        // oppdater shadow
+    TIM3->CR1 |= TIM_CR1_CEN;      // start timer
 }
+
+
+void power_delivery(void)
+{
+    // Begrens u til maks verdi
+    uint32_t u_clamped = (u > 65532) ? 65532 : u;
+
+    // Map u (0 → 65532) til frekvens (1k → 250k)
+    uint32_t freq = 1000 + ((uint64_t)u_clamped * (250000 - 1000)) / 65532;
+
+    TIM3_setFrequency(freq);  // Sett PSC + ARR automatisk
+
+    // 50 % duty
+    uint32_t arr = TIM3->ARR;
+    TIM3->CCR1 = (arr + 1) / 2;
+}
+
+
+
 
 
 void send_power_to_LinMot(void){	// TIM3 is sending the power to the LinMot and this say if it goes in positive or negative direction
 	if (error >0){
-		GPIOB->ODR = GPIOB->ODR | 0x0020;
+		GPIOB->ODR = GPIOB->ODR ^ 0x0020;
 	}
-	else{
-		GPIOB->ODR = !(GPIOB->ODR | 0x0020);
-	}
+	//else{
+		//GPIOB->ODR = !(GPIOB->ODR | 0x0020);
+	//}
 }
 
 

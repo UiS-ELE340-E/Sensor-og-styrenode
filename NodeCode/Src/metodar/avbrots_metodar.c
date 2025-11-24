@@ -122,6 +122,7 @@ void SysTick_Handler(void) {
 	//uint8_t kommando = 0;
 
 	if (node == 0){
+		new_sample = 1;
 
 	}
 	else if (node == 1){

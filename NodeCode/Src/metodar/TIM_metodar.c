@@ -97,9 +97,9 @@ void TIM4_init(void){
 
     // --- Configure TIM4 settings ---
     TIM_TimeBaseInitTypeDef TIM4Setup;
-    TIM4Setup.TIM_Prescaler = 71;         // Gives 1 MHz = 1 us
+    TIM4Setup.TIM_Prescaler = prescalar;         // Gives 1 MHz = 1 us
     TIM4Setup.TIM_CounterMode = TIM_CounterMode_Up;
-    TIM4Setup.TIM_Period = 249;           // Count up to 250 us
+    TIM4Setup.TIM_Period = 149;           // Count up to 250 us
     TIM4Setup.TIM_ClockDivision = 0;
     TIM_TimeBaseInit(TIM4,&TIM4Setup);
 
@@ -139,8 +139,7 @@ void TIM3_init(void){
 
     // --- Configure TIM4 settings ---
     TIM_TimeBaseInitTypeDef TIM3Setup;
-    TIM3Setup.TIM_Prescaler = prescalar;         // Gives 1 MHz = 1 us if 71
-
+    TIM3Setup.TIM_Prescaler = 71;         // Gives 1 MHz = 1 us if 71
     TIM3Setup.TIM_CounterMode = TIM_CounterMode_Up;
     TIM3Setup.TIM_Period = period;           // Count up to --- us
     TIM3Setup.TIM_ClockDivision = 0;
@@ -162,7 +161,7 @@ void TIM3_init(void){
     GPIO_InitStructure_TIM3.GPIO_PuPd  = GPIO_PuPd_NOPULL;
     GPIO_Init(GPIOB, &GPIO_InitStructure_TIM3);
     // Alternate function for TIM3
-//*    GPIO_PinAFConfig(GPIOD, GPIO_PinSource12, GPIO_AF_2); //.
+    GPIO_PinAFConfig(GPIOB, GPIO_PinSource4, GPIO_AF_2); //.
 
     // Activate timer
     TIM_Cmd(TIM3,ENABLE);

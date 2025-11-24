@@ -15,9 +15,9 @@
 //Control Card variables
 //---------------------------------------
 //Power
-uint16_t prescalar;
-uint16_t period;
-uint16_t puls;
+uint32_t prescalar = 71;
+uint32_t period = 0;
+uint32_t puls = 0;
 //PID
 int16_t error;				// Error
 int16_t error_past = 0;

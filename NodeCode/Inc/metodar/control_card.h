@@ -20,6 +20,7 @@
 //---------------------------------------
 void control_card_logic(void);
 void PID_calculation(void);
+void TIM3_setFrequency(uint32_t freq_hz);
 void power_delivery(void);
 void data_from_sensor_card(void);
 void send_power_to_LinMot(void);
