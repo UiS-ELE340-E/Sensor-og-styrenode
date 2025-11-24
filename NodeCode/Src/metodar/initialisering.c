@@ -35,7 +35,7 @@ void aks_oppstart(void);
 void gyro_oppstart(void);
 void interrupt_init(void);
 void ADC3_init(void);
-
+void set_PB5(void);
 //---------------------------------------
 // Function definitions
 //---------------------------------------
@@ -56,11 +56,12 @@ void init(void) {
 	TIM3_init();
 	TIM4_init();
 	ADC3_init();
+	set_PB5();
 	SysTick_init(1000);
 	interrupt_init();
 
 	// Check node type
-    node = 0;//control_or_sensor();
+    node = control_or_sensor();
     // Check communication type
     communication = cable_or_BLT();
     // Enable node specific peripherals
@@ -153,5 +154,16 @@ void set_LED(uint8_t status){
 		GPIOE->ODR = GPIOE->ODR ^ 0x8000;
 		GPIOE->ODR = GPIOE->ODR ^ 0x0100;
 	}
+}
+
+
+void set_PB5(void){
+	GPIO_InitTypeDef GPIO_InitStruct;
+	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_5;
+	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
+	GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOB, &GPIO_InitStruct);
 }
 

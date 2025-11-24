@@ -52,7 +52,7 @@ int main(void)  {
     //test_code();
 
     while(node == 0) {
-    	if (new_sample ==1) {
+    	if (new_sample == 1) {
     		control_card_logic();
     		new_sample = 0;
     	}

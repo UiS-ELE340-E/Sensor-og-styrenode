@@ -19,8 +19,10 @@ uint32_t prescalar = 71;
 uint32_t period = 0;
 uint32_t puls = 0;
 //PID
+uint64_t power;				// Power
 int16_t error;				// Error
-int16_t error_past = 0;
+uint16_t abs_error;			// Absolute error
+int16_t abs_error_past = 0;
 uint16_t up;				// Proportional quantity
 uint16_t ui; 				// Integrator quantity
 uint16_t ui_past = 0;

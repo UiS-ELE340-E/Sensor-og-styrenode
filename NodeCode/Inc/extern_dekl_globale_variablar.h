@@ -19,8 +19,10 @@ extern uint32_t prescalar;
 extern uint32_t period;
 extern uint32_t puls;
 //PID
+extern uint64_t power;				// Power
 extern int16_t error;				// Error
-extern int16_t error_past;
+extern uint16_t abs_error;			// Absolute error
+extern int16_t abs_error_past;
 extern uint16_t up;					// Proportional quantity
 extern uint16_t ui; 				// Integrator quantity
 extern uint16_t ui_past;
