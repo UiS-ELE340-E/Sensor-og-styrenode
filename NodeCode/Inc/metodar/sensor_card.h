@@ -24,7 +24,6 @@
 //---------------------------------------
 void sensor_card_logic(void);
 void get_accelerometerdata(void);
-uint16_t convert_sensordata(void);
 void construct_data(void);
 void send_data(void);
 

@@ -12,7 +12,7 @@
 #include <cmsis_boot/stm32f30x.h>
 #include "string.h"
 #include <extern_dekl_globale_variablar.h>
-#include <metodar/control_card.h>
+//#include <metodar/control_card.h>
 //---------------------------------------
 // Function prototypes
 //---------------------------------------
@@ -46,7 +46,7 @@ void data_from_sensor_card(void){	//only taking the distance
 	distance = (distance << 8) | data[2];
 }
 
-
+/*
 void PID_calculation(void){
 	float a;					// Filter parameter
 	float ymf;					// Filter quantity to D-ledd
@@ -148,7 +148,7 @@ void send_power_to_LinMot(void){	// TIM3 is sending the power to the LinMot and 
 		//GPIOB->ODR = !(GPIOB->ODR | 0x0020);
 	//}
 }
-
+*/
 
 void send_data_to_PC(void){
 	if(send_maaling) {

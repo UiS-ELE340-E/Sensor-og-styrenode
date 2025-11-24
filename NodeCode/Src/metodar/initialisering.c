@@ -55,7 +55,7 @@ void init(void) {
 	TIM2_init();
 	TIM3_init();
 	TIM4_init();
-//	ADC3_init();
+	ADC3_init();
 	SysTick_init(1000);
 	interrupt_init();
 
