@@ -19,17 +19,19 @@ uint32_t prescalar = 71;
 uint32_t period = 0;
 uint32_t puls = 0;
 //PID
-uint64_t power;				// Power
+uint16_t power;				// Power
 int16_t error;				// Error
 uint16_t abs_error;			// Absolute error
 int16_t abs_error_past = 0;
-uint16_t up;				// Proportional quantity
-uint16_t ui; 				// Integrator quantity
-uint16_t ui_past = 0;
-uint16_t ud;				// Derivator quantity
-uint16_t u;					// Power parameter
+uint32_t up;				// Proportional quantity
+uint32_t ui; 				// Integrator quantity
+uint32_t ui_past = 0;
+uint32_t ud;				// Derivator quantity
+uint64_t u;					// Power parameter
 uint8_t direction;			// Direction pointer to LinMot
 
+#define cc_size 10
+uint8_t data_cc[cc_size];
 
 uint8_t IR_sensor_data_mask = 0b00000000; // needs to find out what bit i need from IR-sensor
 uint8_t accelerometer_data_mask = 0b00000000; // needs to find out what bit i need from accelerometer
@@ -39,6 +41,9 @@ uint16_t reference;
 //---------------------------------------
 volatile uint8_t USART3_rx[10];
 volatile uint8_t USART3_rx_irq;
+
+volatile uint8_t USART2_rx[8];
+volatile uint8_t USART2_rx_irq;
 
 // Node variables
 //---------------------------------------

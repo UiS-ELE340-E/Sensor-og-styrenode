@@ -19,16 +19,19 @@ extern uint32_t prescalar;
 extern uint32_t period;
 extern uint32_t puls;
 //PID
-extern uint64_t power;				// Power
+extern uint16_t power;				// Power
 extern int16_t error;				// Error
 extern uint16_t abs_error;			// Absolute error
 extern int16_t abs_error_past;
-extern uint16_t up;					// Proportional quantity
-extern uint16_t ui; 				// Integrator quantity
-extern uint16_t ui_past;
-extern uint16_t ud;					// Derivator quantity
-extern uint16_t u;					// Power parameter
+extern uint32_t up;					// Proportional quantity
+extern uint32_t ui; 				// Integrator quantity
+extern uint32_t ui_past;
+extern uint32_t ud;					// Derivator quantity
+extern uint64_t u;					// Power parameter
 extern uint8_t direction;			// Direction pointer to LinMot
+
+#define cc_size 10
+extern uint8_t data_cc[cc_size];
 
 extern uint8_t IR_sensor_data_mask;
 extern uint8_t accelerometer_data_mask;
@@ -48,6 +51,8 @@ extern uint16_t dist_convertion[3101];
 //---------------------------------------
 extern volatile uint8_t USART3_rx[10];
 extern volatile uint8_t USART3_rx_irq;
+extern volatile uint8_t USART2_rx[8];
+extern volatile uint8_t USART2_rx_irq;
 
 extern uint8_t node;
 

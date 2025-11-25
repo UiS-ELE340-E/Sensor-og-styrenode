@@ -12,6 +12,7 @@
 #include <cmsis_boot/stm32f30x.h>
 #include "string.h"
 #include <extern_dekl_globale_variablar.h>
+#include <metodar/control_card.h>
 //#include <metodar/control_card.h>
 //---------------------------------------
 // Function prototypes
@@ -21,11 +22,11 @@ float a = 0.0f;					// Filter parameter
 float ymf = 0.0f;					// Filter quantity to D-ledd
 uint16_t ui_max = 65535;		// Max power from integral
 uint16_t u_max = 65535;			// Max power total
-uint16_t kp = 800;				// Proportinal parameter
-uint16_t Ti = 0;				// Integrator parameter
-float Td = 0.0f;					// Derivator parameter
+uint16_t kp = 4000;				// Proportinal parameter
+float Ti = 0.0f;				// Integrator parameter
+float Td = 0.01f;					// Derivator parameter
 uint32_t yr = 300; //reference;		// Reference
-
+uint8_t blink_test = 0;
 //---------------------------------------
 // Function definitions
 //---------------------------------------
@@ -41,10 +42,17 @@ void control_card_logic(void){
 		slow_blink = 0;
 	}
 	data_from_sensor_card();
+	data_from_PC();
 	PID_calculation();
 	LinMot_direction();
 	power_delivery();
-	send_data_to_PC();
+	construct_data_cc();
+	USART2_send_package();
+	blink_test++;
+	if (blink_test > 9){
+		GPIOE->ODR = GPIOE->ODR ^ 0x100;
+		blink_test = 0;
+	}
 }
 
 // Extracting the data from sensor card (UART1)
@@ -54,9 +62,31 @@ void data_from_sensor_card(void){	//only taking the distance
 }
 
 
+void data_from_PC(void){	//only taking the distance
+	uint16_t Td_;
+	uint16_t Ti_;
+	if (USART2_rx_irq > 7){
+		yr = USART2_rx[1];
+		yr = (yr << 8) | USART2_rx[0];
+		kp = USART2_rx[3];
+		kp = (yr << 8) | USART2_rx[2];
+		Ti_ = USART2_rx[5];
+		Ti_ = (yr << 8) | USART2_rx[4];
+		Td_ = USART2_rx[7];
+		Td_ = (yr << 8) | USART2_rx[6];
+
+		Ti = Ti_ / 1000;
+		Td = Td_ / 1000;
+
+		USART2_rx_irq = 0;
+	}
+
+}
+
+
 void PID_calculation(void){
 	float Tf = (1.0/(2*3.14));		// Time frequancy
-	float Ts = Tf/5;
+	float Ts = 0.01;
 	uint32_t ym = distance;			// Actual placement. it will be between 0 and 1500
 
 
@@ -66,9 +96,12 @@ void PID_calculation(void){
 
 	abs_error = abs(error);
 	up = kp*abs_error;											// P-Ledd
+	if (up >= u_max){										// I-ledd restriction
+		up = u_max;
+	}
 
 	if (Ti > 0){
-		ui = ui_past + (kp*Ts*(abs_error_past-abs_error))/(Ti*2);	// I-Ledd
+		ui = ui_past + (kp*Ts*(abs_error_past+abs_error))/(Ti*2);	// I-Ledd
 	}
 	else{
 		ui = 0;
@@ -81,6 +114,9 @@ void PID_calculation(void){
 	ymf = a*ymf_past+(1-a)*ym;								// Filter for the D-ledd
 
 	ud = -(kp*Td*(ymf-ymf_past))/Ts;						// D-ledd
+	if (ud >= u_max){										// I-ledd restriction
+		ud = u_max;
+	}
 
 	u = up + ui + ud;										// calculating the total power
 
@@ -148,21 +184,20 @@ void TIM3_setFrequency(uint32_t freq_hz)
 }
 
 
+void construct_data_cc(void){
 
+	data_cc[0] = error & 0xFF;
+	data_cc[1] = (error >> 8) & 0xFF;
+	data_cc[2] = power & 0xFF;
+	data_cc[3] = (power >> 8) & 0xFF;
+	data_cc[4] = up & 0xFF;
+	data_cc[5] = (up >> 8) & 0xFF;
+	data_cc[6] = ui & 0xFF;
+	data_cc[7] = (ui >> 8) & 0xFF;
+	data_cc[8] = ud & 0xFF;
+	data_cc[9] = (ud >> 8) & 0xFF;
 
-void send_data_to_PC(void){
-	if(send_maaling) {
-		samplenr++;
-
-		//USART2_send_tid8_og_data16x9_PC(samplenr);
-
-		 send_maaling = 0;
-	}
 }
-
-
-
-
 
 
 
