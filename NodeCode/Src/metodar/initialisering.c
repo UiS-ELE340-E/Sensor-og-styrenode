@@ -11,6 +11,7 @@
 #include <extern_dekl_globale_variablar.h>
 #include <metodar/UART_metodar.h>
 #include <metodar/TIM_metodar.h>
+#include <cmsis_lib/stm32f30x_spi.h>
 
 // #include <stm32f3_discovery/stm32f3_discovery_lsm303dlhc.h>
 
@@ -112,6 +113,10 @@ void enable(uint8_t node){
 	if (node == 0){
 		// Control node
 		TIM4_deactivate();
+		SPI_Cmd(SPI1, DISABLE);
+		SPI_Cmd(SPI2, DISABLE);
+		TIM_Cmd(TIM2, DISABLE);
+
 	}
 	else if (node == 1){
 		// Sensor node
