@@ -12,6 +12,7 @@
 #include <cmsis_lib/stm32f30x_gpio.h>
 #include <cmsis_lib/stm32f30x_usart.h>
 #include <cmsis_lib/stm32f30x_dma.h>
+#include <string.h>
 #include <extern_dekl_globale_variablar.h>
 
 //---------------------------------------
@@ -21,6 +22,7 @@
 void interrupt_init(void);
 void SysTick_init(uint32_t hz);
 void SysTick_Handler(void);
+void USART2_EXTI26_IRQHandler(void);
 void USART3_IRQinit(void);
 void USART3_EXTI28_IRQHandler(void);
 void DMA1_CH2_IRQHandler(void);
@@ -57,7 +59,7 @@ void interrupt_init(void) {
  */
 void SysTick_init(uint32_t hz){
 	uint32_t reload = (CORE_HZ / hz) - 1;   // calculate reload
-	if (reload > 0xFFFFFF) reload = 0xFFFFFF; // max 24‑bit value
+	if (reload > 0xFFFFFF) reload = 0xFFFFFF; // max 24-bit value
 
 	// Setup of SysTick
 	NVIC_SetPriority(SysTick_IRQn, 1); // 0-31, 0 is highest
@@ -69,6 +71,15 @@ void SysTick_init(uint32_t hz){
 					| SysTick_CTRL_ENABLE_Msk);
 }
 
+void USART2_IRQinit(void) {
+    // Enable USART2 RX interrupt
+    USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);
+
+    // Configure NVIC for USART2
+    NVIC_SetPriority(USART2_IRQn, 1);
+    NVIC_EnableIRQ(USART2_IRQn);
+}
+
 void USART3_IRQinit(void) {
 	// Enable USART3 RX interrupt
 	USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);
@@ -78,12 +89,34 @@ void USART3_IRQinit(void) {
 	NVIC_EnableIRQ(USART3_IRQn);
 }
 
+
+void USART2_EXTI26_IRQHandler(void) {
+
+
+
+	if (USART_GetITStatus(USART2,USART_IT_RXNE) != RESET) {
+		if(USART2_rx_irq < 8){
+			// Store incoming byte
+				USART2_rx[USART2_rx_irq] = USART_ReceiveData(USART2);
+				USART2_rx_irq++;
+		}
+
+		USART_ClearITPendingBit(USART2, USART_IT_RXNE);
+	}
+	else if (USART_GetITStatus(USART2,USART_IT_ORE) != RESET) {
+		USART_ClearITPendingBit(USART2, USART_IT_ORE);
+
+	}
+
+}
+
 void USART3_EXTI28_IRQHandler(void) {
 
 	if (USART_GetITStatus(USART3,USART_IT_RXNE) != RESET) {
 		// Store incoming byte
 		USART3_rx[USART3_rx_irq] = USART_ReceiveData(USART3);
 		USART3_rx_irq++;
+		USART_ClearITPendingBit(USART3, USART_IT_RXNE);
 	}
 }
 
@@ -106,10 +139,9 @@ void DMA1_CH3_IRQHandler(void){
 		DMA_ClearITPendingBit(DMA1_IT_TE3);
 	}
 	if (DMA_GetITStatus(DMA1_IT_TC3) != RESET){
-		for (int i = 0; i < 9; ++i){
-			data[i] = transmit_buffer[i];
-		}
+		memcpy(data, transmit_buffer, buffer_size);
 		slow_blink++;
+		new_sample = 1;
 		DMA_ClearITPendingBit(DMA1_IT_TC3);
 	}
 
@@ -122,6 +154,7 @@ void SysTick_Handler(void) {
 	//uint8_t kommando = 0;
 
 	if (node == 0){
+
 
 	}
 	else if (node == 1){

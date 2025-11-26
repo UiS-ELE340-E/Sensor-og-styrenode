@@ -11,6 +11,7 @@
 #include <extern_dekl_globale_variablar.h>
 #include <metodar/UART_metodar.h>
 #include <metodar/TIM_metodar.h>
+#include <cmsis_lib/stm32f30x_spi.h>
 
 // #include <stm32f3_discovery/stm32f3_discovery_lsm303dlhc.h>
 
@@ -35,7 +36,7 @@ void aks_oppstart(void);
 void gyro_oppstart(void);
 void interrupt_init(void);
 void ADC3_init(void);
-
+void set_PB5(void);
 //---------------------------------------
 // Function definitions
 //---------------------------------------
@@ -53,8 +54,10 @@ void init(void) {
 	USART2_init();
  	USART3_init();
 	TIM2_init();
+	TIM3_init();
 	TIM4_init();
 	ADC3_init();
+	set_PB5();
 	SysTick_init(1000);
 	interrupt_init();
 
@@ -110,6 +113,11 @@ void enable(uint8_t node){
 	if (node == 0){
 		// Control node
 		TIM4_deactivate();
+		SPI_Cmd(SPI1, DISABLE);
+		SPI_Cmd(SPI2, DISABLE);
+		TIM_Cmd(TIM2, DISABLE);
+		SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;
+
 	}
 	else if (node == 1){
 		// Sensor node
@@ -153,3 +161,15 @@ void set_LED(uint8_t status){
 		GPIOE->ODR = GPIOE->ODR ^ 0x0100;
 	}
 }
+
+
+void set_PB5(void){
+	GPIO_InitTypeDef GPIO_InitStruct;
+	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_5;
+	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
+	GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOB, &GPIO_InitStruct);
+}
+

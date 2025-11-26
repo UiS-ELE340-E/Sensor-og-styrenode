@@ -41,5 +41,6 @@ void USART2_handtering(uint8_t loggedata);
 void USART2_handtering1(void);
 void USART2_handtering2(uint16_t teljar);
 void USART2andtering3(void);
+void USART2_send_package(void);
 
 #endif /* METODAR_UART_METODAR_H_ */

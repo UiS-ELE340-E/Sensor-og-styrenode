@@ -8,6 +8,7 @@
 //---------------------------------------
 #include <metodar/TIM_metodar.h>
 
+
 //---------------------------------------
 // Function definitions
 //---------------------------------------
@@ -96,9 +97,9 @@ void TIM4_init(void){
 
     // --- Configure TIM4 settings ---
     TIM_TimeBaseInitTypeDef TIM4Setup;
-    TIM4Setup.TIM_Prescaler = 71;         // Gives 1 MHz = 1 us
+    TIM4Setup.TIM_Prescaler = prescalar;         // Gives 1 MHz = 1 us
     TIM4Setup.TIM_CounterMode = TIM_CounterMode_Up;
-    TIM4Setup.TIM_Period = 249;           // Count up to 250 us
+    TIM4Setup.TIM_Period = 149;           // Count up to 250 us
     TIM4Setup.TIM_ClockDivision = 0;
     TIM_TimeBaseInit(TIM4,&TIM4Setup);
 
@@ -127,3 +128,46 @@ void TIM4_init(void){
 void TIM4_deactivate(void){
     TIM_Cmd(TIM4,DISABLE);
 }
+
+/*
+ * Setup of TIM3
+ */
+void TIM3_init(void){
+    // --- Enable peripheral clocks ---
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE); // | RCC_AHBPeriph_AFIO
+
+    // --- Configure TIM4 settings ---
+    TIM_TimeBaseInitTypeDef TIM3Setup;
+    TIM3Setup.TIM_Prescaler = 71;         // Gives 1 MHz = 1 us if 71
+    TIM3Setup.TIM_CounterMode = TIM_CounterMode_Up;
+    TIM3Setup.TIM_Period = period;           // Count up to --- us
+    TIM3Setup.TIM_ClockDivision = 0;
+    TIM_TimeBaseInit(TIM3,&TIM3Setup);
+
+    // --- Configure TIM4 Output Compare ---
+    TIM_OCInitTypeDef TIM3OCSetup;
+    TIM3OCSetup.TIM_OCMode = TIM_OCMode_PWM1;
+    TIM3OCSetup.TIM_OutputState = TIM_OutputState_Enable;
+    TIM3OCSetup.TIM_Pulse = puls;          // Duty = Period/2 us
+    TIM3OCSetup.TIM_OCPolarity = TIM_OCPolarity_High;
+    TIM_OC1Init(TIM3,&TIM3OCSetup);
+
+    // --- Configure TIM3 to PD12 ---
+    GPIO_InitTypeDef GPIO_InitStructure_TIM3;
+    GPIO_InitStructure_TIM3.GPIO_Pin = GPIO_Pin_4;
+    GPIO_InitStructure_TIM3.GPIO_Mode = GPIO_Mode_AF;
+    GPIO_InitStructure_TIM3.GPIO_Speed = GPIO_Speed_Level_1;
+    GPIO_InitStructure_TIM3.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+    GPIO_Init(GPIOB, &GPIO_InitStructure_TIM3);
+    // Alternate function for TIM3
+    GPIO_PinAFConfig(GPIOB, GPIO_PinSource4, GPIO_AF_2); //.
+
+    // Activate timer
+    TIM_Cmd(TIM3,ENABLE);
+}
+
+
+
+
+

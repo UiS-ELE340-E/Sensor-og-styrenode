@@ -12,15 +12,47 @@
 // Globale variablar
 //---------------------------------------
 
+//Control Card variables
+//---------------------------------------
+//Power
+extern uint32_t prescalar;
+extern uint32_t period;
+extern uint32_t puls;
+//PID
+extern uint16_t power;				// Power
+extern int16_t error;				// Error
+extern uint16_t abs_error;			// Absolute error
+extern int16_t abs_error_past;
+extern uint32_t up;					// Proportional quantity
+extern uint32_t ui; 				// Integrator quantity
+extern uint32_t ui_past;
+extern uint32_t ud;					// Derivator quantity
+extern uint64_t u;					// Power parameter
+extern uint8_t direction;			// Direction pointer to LinMot
+
+#define cc_size 10
+extern uint8_t data_cc[cc_size];
+
+extern uint8_t IR_sensor_data_mask;
+extern uint8_t accelerometer_data_mask;
+extern uint16_t reference;
+
 // Distance sensor data
 //---------------------------------------
 extern uint16_t sensor_data;
+extern uint16_t sensor_data_[10];
+extern uint32_t sensor_data_mean;
 extern uint16_t distance;
+
+// Sensor specific variables
+extern uint16_t dist_convertion[3101];
 
 // Interrupt variables
 //---------------------------------------
 extern volatile uint8_t USART3_rx[10];
 extern volatile uint8_t USART3_rx_irq;
+extern volatile uint8_t USART2_rx[8];
+extern volatile uint8_t USART2_rx_irq;
 
 extern uint8_t node;
 
@@ -33,7 +65,7 @@ extern 	uint8_t slow_blink;
 
 // DMA transfer variables
 #define buffer_size 9
-extern uint8_t transmit_buffer[buffer_size];
+extern uint8_t transmit_buffer[buffer_size];		//USART 1
 extern uint8_t data[buffer_size];
 
 // For tilstandsmaskinen
