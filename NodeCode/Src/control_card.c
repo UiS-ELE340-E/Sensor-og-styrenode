@@ -69,7 +69,7 @@ void data_from_PC(void){	//only taking the distance
 	float Td_f;
 	float Ti_f;
 
-	if (USART2_rx_irq > 6){
+	if (USART2_rx_irq > 7){
 		yr = USART2_rx[1];
 		yr = (yr << 8) | USART2_rx[0];
 		kp = USART2_rx[3];

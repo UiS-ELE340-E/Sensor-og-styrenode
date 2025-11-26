@@ -51,7 +51,7 @@ extern uint16_t dist_convertion[3101];
 //---------------------------------------
 extern volatile uint8_t USART3_rx[10];
 extern volatile uint8_t USART3_rx_irq;
-extern volatile uint8_t USART2_rx[10];
+extern volatile uint8_t USART2_rx[8];
 extern volatile uint8_t USART2_rx_irq;
 
 extern uint8_t node;
