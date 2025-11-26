@@ -153,6 +153,11 @@ void power_delivery(void){
         TIM3->ARR = 0;
         return;   			// Stop function
     }
+    if (kp == 0 && Ti == 0 && Td == 0){
+        TIM3->CCR1 = 0;		// Set PWM to 0
+        TIM3->ARR = 0;
+        return;   			// Stop function
+    }
     // Begrens u til maks verdi
     power = (u > 65535) ? 65535 : u;
 
