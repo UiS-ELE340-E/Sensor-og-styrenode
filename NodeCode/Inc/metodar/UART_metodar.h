@@ -40,7 +40,7 @@ void USART2_send_tid8_og_data16x3(uint8_t tid, int16_t loggeverdi1, int16_t logg
 void USART2_handtering(uint8_t loggedata);
 void USART2_handtering1(void);
 void USART2_handtering2(uint16_t teljar);
-void USART2_send_tid8_og_data16x9_PC(uint8_t tid);
 void USART2andtering3(void);
+void USART2_send_package(void);
 
 #endif /* METODAR_UART_METODAR_H_ */

@@ -16,6 +16,10 @@
 #include <extern_dekl_globale_variablar.h>
 #include <math.h>
 #include <stdlib.h>
+#include <metodar/UART_metodar.h>
+#include <cmsis_boot/stm32f30x.h>
+#include "string.h"
+#include <extern_dekl_globale_variablar.h>
 
 //---------------------------------------
 // Function prototypes
@@ -28,6 +32,5 @@ void data_from_sensor_card(void);
 void data_from_PC(void);
 void LinMot_direction(void);
 void construct_data_cc(void);
-void USART2_send_package(void);
 
 #endif /* METODAR_CONTROL_CARD_H_ */

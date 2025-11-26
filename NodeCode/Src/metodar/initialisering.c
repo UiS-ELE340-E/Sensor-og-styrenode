@@ -116,6 +116,7 @@ void enable(uint8_t node){
 		SPI_Cmd(SPI1, DISABLE);
 		SPI_Cmd(SPI2, DISABLE);
 		TIM_Cmd(TIM2, DISABLE);
+		SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;
 
 	}
 	else if (node == 1){

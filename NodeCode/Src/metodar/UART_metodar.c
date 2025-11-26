@@ -351,12 +351,7 @@ void USART2_send_package(void){	// This is being used to send data from control 
 
 }
 
-void USART2_get_package(void){
 
-
-
-
-}
 
 void USART2_send_tid8_og_data16x3(uint8_t tid, int16_t loggeverdi1, int16_t loggeverdi2, int16_t loggeverdi3){
 	uint8_t tid0, tid1;
