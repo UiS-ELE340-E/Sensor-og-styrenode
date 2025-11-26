@@ -127,6 +127,9 @@ void USART2_init(void)
     USART2_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
     USART2_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
     USART_Init(USART2, &USART2_InitStructure);
+    USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);
+    NVIC_SetPriority(USART2_IRQn, 0);
+    NVIC_EnableIRQ(USART2_IRQn);
 
     // --- Configure USART2 TX (PA2) ---
     GPIO_InitTypeDef GPIO_InitStructure_UART2;

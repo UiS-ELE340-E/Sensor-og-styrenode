@@ -42,7 +42,7 @@ uint16_t reference;
 volatile uint8_t USART3_rx[10];
 volatile uint8_t USART3_rx_irq;
 
-volatile uint8_t USART2_rx[8];
+volatile uint8_t USART2_rx[10];
 volatile uint8_t USART2_rx_irq;
 
 // Node variables

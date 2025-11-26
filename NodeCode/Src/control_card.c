@@ -48,6 +48,7 @@ void control_card_logic(void){
 	power_delivery();
 	construct_data_cc();
 	USART2_send_package();
+
 	blink_test++;
 	if (blink_test > 9){
 		GPIOE->ODR = GPIOE->ODR ^ 0x100;
@@ -65,18 +66,23 @@ void data_from_sensor_card(void){	//only taking the distance
 void data_from_PC(void){	//only taking the distance
 	uint16_t Td_;
 	uint16_t Ti_;
-	if (USART2_rx_irq > 7){
+	float Td_f;
+	float Ti_f;
+
+	if (USART2_rx_irq > 6){
 		yr = USART2_rx[1];
 		yr = (yr << 8) | USART2_rx[0];
 		kp = USART2_rx[3];
-		kp = (yr << 8) | USART2_rx[2];
+		kp = (kp << 8) | USART2_rx[2];
 		Ti_ = USART2_rx[5];
-		Ti_ = (yr << 8) | USART2_rx[4];
+		Ti_ = (Ti_ << 8) | USART2_rx[4];
 		Td_ = USART2_rx[7];
-		Td_ = (yr << 8) | USART2_rx[6];
+		Td_ = (Td_ << 8) | USART2_rx[6];
 
-		Ti = Ti_ / 1000;
-		Td = Td_ / 1000;
+		Ti_f = Ti_;
+		Td_f = Td_;
+		Ti = Ti_f / 1000;
+		Td = Td_f / 1000;
 
 		USART2_rx_irq = 0;
 	}

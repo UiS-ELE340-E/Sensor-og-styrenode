@@ -22,6 +22,7 @@
 void interrupt_init(void);
 void SysTick_init(uint32_t hz);
 void SysTick_Handler(void);
+void USART2_EXTI26_IRQHandler(void);
 void USART3_IRQinit(void);
 void USART3_EXTI28_IRQHandler(void);
 void DMA1_CH2_IRQHandler(void);
@@ -91,13 +92,25 @@ void USART3_IRQinit(void) {
 
 void USART2_EXTI26_IRQHandler(void) {
 
-	if (USART_GetITStatus(USART2,USART_IT_RXNE) != RESET & USART2_rx_irq < 7) {
-		// Store incoming byte
-		USART2_rx[USART2_rx_irq] = USART_ReceiveData(USART2);
-		USART2_rx_irq++;
+
+
+	if (USART_GetITStatus(USART2,USART_IT_RXNE) != RESET) {
+		if(USART2_rx_irq < 7){
+			// Store incoming byte
+				USART2_rx[USART2_rx_irq] = USART_ReceiveData(USART2);
+				USART2_rx_irq++;
+		}
+
 		USART_ClearITPendingBit(USART2, USART_IT_RXNE);
 	}
+	else if (USART_GetITStatus(USART2,USART_IT_TXE) != RESET) {
+		USART_ClearITPendingBit(USART2, USART_IT_TXE);
 
+	}
+	else if (USART_GetITStatus(USART2,USART_IT_TC) != RESET) {
+		USART_ClearITPendingBit(USART2, USART_IT_TC);
+
+	}
 }
 
 void USART3_EXTI28_IRQHandler(void) {
