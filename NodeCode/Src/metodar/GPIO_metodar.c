@@ -67,54 +67,56 @@ void GPIO_brytaravprelling(void);
 
 void GPIO_oppstart(void)  {
 
-//GPIO-pinnar til lysdiodar og til test
-//------------------------------------------
-  //Deklarasjon av initialiseringsstrukturen.
-    GPIO_InitTypeDef   GPIO_InitStructure;
+	//GPIO-pinnar til lysdiodar og til test
+	//------------------------------------------
+	//Deklarasjon av initialiseringsstrukturen.
 
-//GPIO-pinne PA0 som er kobla til USER-brytaren
-//---------------------------------------------
-  //Slepp foerst til klokka paa GPIOA-modulen
+    //GPIO-pinne PA0 som er kobla til USER-brytaren
+    //---------------------------------------------
+    //Slepp foerst til klokka paa GPIOA-modulen
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
+	//Konfigurer brytarpinnen
+    GPIO_InitTypeDef   GPIO_InitStructA;
+    GPIO_InitStructA.GPIO_Pin  = GPIO_Pin_0;
+    GPIO_InitStructA.GPIO_Mode = GPIO_Mode_IN;
+    GPIO_InitStructA.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+	GPIO_Init(GPIOA, &GPIO_InitStructA);
 
-  //Konfigurer brytarpinnen
-	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_0;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-	GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-
-  //Initialiser, dvs. last ned konfigurasjonen i modulen
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-  //Slepp f�rst til klokka paa GPIO-portE.
+	//Slepp f�rst til klokka paa GPIO-portE.
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOE, ENABLE);
+    //Konfigurer GPIO_pinnane PE8 - 15 som er kobla til LED-ar.
+    //Konfigurer ogsaa pinnen PE7 som er brukt til testing.
+    GPIO_InitTypeDef   GPIO_InitStructE;
+    GPIO_InitStructE.GPIO_Pin = GPIO_Pin_7|GPIO_Pin_8|GPIO_Pin_9|GPIO_Pin_10|GPIO_Pin_11|GPIO_Pin_12|GPIO_Pin_13|GPIO_Pin_14|GPIO_Pin_15;
+    GPIO_InitStructE.GPIO_Mode = GPIO_Mode_OUT;
+    GPIO_InitStructE.GPIO_Speed = GPIO_Speed_Level_1;
+    GPIO_InitStructE.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructE.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+    GPIO_Init(GPIOE, &GPIO_InitStructE);
 
-  //Konfigurer GPIO_pinnane PE8 - 15 som er kobla til LED-ar.
-  //Konfigurer ogsaa pinnen PE7 som er brukt til testing.
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7|GPIO_Pin_8|GPIO_Pin_9|GPIO_Pin_10|GPIO_Pin_11|GPIO_Pin_12|GPIO_Pin_13|GPIO_Pin_14|GPIO_Pin_15;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_Level_1;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-
-
-  //Initialiser, dvs. last ned konfigurasjonen i modulen
-    GPIO_Init(GPIOE, &GPIO_InitStructure);
-
-
-  //Slepp s� til klokka paa GPIO-portC.
+    //Slepp s� til klokka paa GPIO-portC.
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
-
-  //Konfigurer GPIO_pinnen PC6 som er brukt til testing av avbrotsmetoden for SysTick.
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_Level_1;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-
-	//Initialiser, dvs. last ned konfigurasjonen i modulen
-	GPIO_Init(GPIOC, &GPIO_InitStructure);
-
+	//Konfigurer GPIO_pinnen PC6 som er brukt til testing av avbrotsmetoden for SysTick.
+	GPIO_InitTypeDef GPIO_InitStructC;
+	GPIO_InitStructC.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
+	GPIO_InitStructC.GPIO_Mode = GPIO_Mode_OUT;
+	GPIO_InitStructC.GPIO_Speed = GPIO_Speed_Level_1;
+	GPIO_InitStructC.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructC.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+	GPIO_Init(GPIOC, &GPIO_InitStructC);
 }
 
+void PB5_init(void){
+	// Init of PB5 for LinMot
+	GPIO_InitTypeDef GPIO_InitStructB;
+	GPIO_InitStructB.GPIO_Pin = GPIO_Pin_5;
+	GPIO_InitStructB.GPIO_Mode = GPIO_Mode_OUT;
+	GPIO_InitStructB.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructB.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_InitStructB.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOB, &GPIO_InitStructB);
+
+}
 
 void GPIO_blink(void)  {
 

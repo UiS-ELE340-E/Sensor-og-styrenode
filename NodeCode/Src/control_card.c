@@ -9,7 +9,7 @@
 // Inclusions and definitions
 //---------------------------------------
 #include <metodar/control_card.h>
-//#include <metodar/control_card.h>
+
 //---------------------------------------
 // Function prototypes
 //---------------------------------------
