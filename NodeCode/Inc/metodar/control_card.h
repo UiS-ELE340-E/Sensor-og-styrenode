@@ -17,9 +17,11 @@
 #include <math.h>
 #include <stdlib.h>
 #include <metodar/UART_metodar.h>
+#include <metodar/TIM_metodar.h>
 #include <cmsis_boot/stm32f30x.h>
 #include "string.h"
 #include <extern_dekl_globale_variablar.h>
+#include <cmsis_lib/stm32f30x_gpio.h>
 
 //---------------------------------------
 // Function prototypes

@@ -13,9 +13,6 @@
 #include <metodar/TIM_metodar.h>
 #include <cmsis_lib/stm32f30x_spi.h>
 
-// #include <stm32f3_discovery/stm32f3_discovery_lsm303dlhc.h>
-
-
 //---------------------------------------
 // Function prototypes
 //---------------------------------------
@@ -27,16 +24,14 @@ void set_LED(uint8_t status);
 
 void GPIO_oppstart(void);
 void SysTick_init(uint32_t hz);
-void TIM2_oppstart(void);
-void SPI1_oppstart(void);
-void SPI2_oppstart(void);
-void Exp_click_sokkel1_oppstart(void);
 void LinMot_oppstart(void);
 void aks_oppstart(void);
-void gyro_oppstart(void);
 void interrupt_init(void);
 void ADC3_init(void);
-void set_PB5(void);
+void PB5_init(void);
+void SPI2_oppstart(void);
+void Exp_click_sokkel1_oppstart(void);
+
 //---------------------------------------
 // Function definitions
 //---------------------------------------
@@ -45,19 +40,17 @@ void init(void) {
 
 	set_LED(8);
 
-	SPI1_oppstart();
 	SPI2_oppstart();
 	Exp_click_sokkel1_oppstart();
 	aks_oppstart();
-	gyro_oppstart();
 	USART1_init();
 	USART2_init();
  	USART3_init();
 	TIM2_init();
 	TIM3_init();
 	TIM4_init();
+	PB5_init();
 	ADC3_init();
-	set_PB5();
 	SysTick_init(1000);
 	interrupt_init();
 
@@ -67,10 +60,6 @@ void init(void) {
     communication = cable_or_BLT();
     // Enable node specific peripherals
     enable(node);
-
-    //enable(0);
-    //enable(1);
-
 }
 
 uint8_t control_or_sensor(void){
@@ -85,7 +74,6 @@ uint8_t control_or_sensor(void){
 
 	if (sensor_data < 50){
 		// Control node
-		ADC_Cmd(ADC3, DISABLE);
 		return 0;
 	}
 	else{
@@ -112,15 +100,16 @@ uint8_t cable_or_BLT(void){
 void enable(uint8_t node){
 	if (node == 0){
 		// Control node
-		TIM4_deactivate();
-		SPI_Cmd(SPI1, DISABLE);
-		SPI_Cmd(SPI2, DISABLE);
+		ADC_Cmd(ADC3, DISABLE);
 		TIM_Cmd(TIM2, DISABLE);
+		TIM_Cmd(TIM4, DISABLE);
 		SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;
-
 	}
 	else if (node == 1){
 		// Sensor node
+		TIM_Cmd(TIM2, DISABLE);
+		TIM_Cmd(TIM3, DISABLE);
+		USART_Cmd(USART2, DISABLE);
 		SysTick_init(100);
 	}
 	if (communication == 0){
@@ -161,15 +150,3 @@ void set_LED(uint8_t status){
 		GPIOE->ODR = GPIOE->ODR ^ 0x0100;
 	}
 }
-
-
-void set_PB5(void){
-	GPIO_InitTypeDef GPIO_InitStruct;
-	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_5;
-	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
-	GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOB, &GPIO_InitStruct);
-}
-

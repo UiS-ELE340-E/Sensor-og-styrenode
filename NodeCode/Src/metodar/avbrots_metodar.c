@@ -97,8 +97,8 @@ void USART2_EXTI26_IRQHandler(void) {
 	if (USART_GetITStatus(USART2,USART_IT_RXNE) != RESET) {
 		if(USART2_rx_irq < 8){
 			// Store incoming byte
-				USART2_rx[USART2_rx_irq] = USART_ReceiveData(USART2);
-				USART2_rx_irq++;
+			USART2_rx[USART2_rx_irq] = USART_ReceiveData(USART2);
+			USART2_rx_irq++;
 		}
 
 		USART_ClearITPendingBit(USART2, USART_IT_RXNE);
