@@ -19,15 +19,17 @@ uint32_t prescalar = 71;
 uint32_t period = 0;
 uint32_t puls = 0;
 //PID
-uint16_t power;				// Power
+uint64_t power;				// Power
+uint64_t freq;				// Frequency
 int16_t error;				// Error
+int16_t error_past;
 uint16_t abs_error;			// Absolute error
 int16_t abs_error_past = 0;
-uint32_t up;				// Proportional quantity
-uint32_t ui; 				// Integrator quantity
-uint32_t ui_past = 0;
-uint32_t ud;				// Derivator quantity
-uint64_t u;					// Power parameter
+int32_t up;				// Proportional quantity
+int32_t ui; 				// Integrator quantity
+int32_t ui_past = 0;
+int32_t ud;				// Derivator quantity
+uint32_t u;					// Power parameter
 uint8_t direction;			// Direction pointer to LinMot
 
 #define cc_size 10

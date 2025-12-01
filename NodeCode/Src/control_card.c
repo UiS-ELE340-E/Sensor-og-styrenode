@@ -16,13 +16,14 @@
 float ymf_past = 0.0f;
 float a = 0.0f;					// Filter parameter
 float ymf = 0.0f;					// Filter quantity to D-ledd
-uint16_t ui_max = 65535;		// Max power from integral
-uint16_t u_max = 65535;			// Max power total
-uint16_t kp = 4000;				// Proportinal parameter
-float Ti = 0.0f;				// Integrator parameter
-float Td = 0.01f;					// Derivator parameter
+int32_t u_max = 65535;			// Max power
+int32_t u_min = -65535;
+int16_t kp = 2000;				// Proportinal parameter
+float Ti = 1.0f;				// Integrator parameter
+float Td = 0.0f;					// Derivator parameter
 uint32_t yr = 300; //reference;		// Reference
 uint8_t blink_test = 0;
+uint32_t timer_clk = 72000000;
 //---------------------------------------
 // Function definitions
 //---------------------------------------
@@ -58,8 +59,7 @@ void data_from_sensor_card(void){	//only taking the distance
 	distance = (distance << 8) | data[1];
 }
 
-
-void data_from_PC(void){	//only taking the distance
+void data_from_PC(void){
 	uint16_t Td_;
 	uint16_t Ti_;
 	float Td_f;
@@ -82,55 +82,50 @@ void data_from_PC(void){	//only taking the distance
 
 		USART2_rx_irq = 0;
 	}
-
 }
-
 
 void PID_calculation(void){
 	float Tf = (1.0/(2*3.14));		// Time frequancy
 	float Ts = 0.01;
 	uint32_t ym = distance;			// Actual placement. it will be between 0 and 1500
 
-
 	error = yr-ym;
 
 	a = Tf/(Tf+Ts);											// Filter parameter
 
 	abs_error = abs(error);
-	up = kp*abs_error;											// P-Ledd
-	if (up >= u_max){										// I-ledd restriction
-		up = u_max;
+	if (abs_error > 3)  up = kp*error;						// P-Ledd
+	else{
+		up = 0;
 	}
 
-	if (Ti > 0){
-		ui = ui_past + (kp*Ts*(abs_error_past+abs_error))/(Ti*2);	// I-Ledd
+	if (Ti > 0 && abs_error > 3){
+		ui = ui_past + (kp*Ts*(error_past+error))/(Ti*2);	// I-Ledd
 	}
 	else{
 		ui = 0;
 	}
-
-	if (ui >= ui_max){										// I-ledd restriction
-		ui = ui_max;
-	}
+	if (ui > u_max)	ui = u_max;						// I-ledd restriction
+	if (ui < u_min)	ui = u_min;
 
 	ymf = a*ymf_past+(1-a)*ym;								// Filter for the D-ledd
 
-	ud = -(kp*Td*(ymf-ymf_past))/Ts;						// D-ledd
-	if (ud >= u_max){										// I-ledd restriction
-		ud = u_max;
+	if (Ti > 0 && abs_error > 3){
+		ud = -(kp*Td*(ymf-ymf_past))/Ts;			// D-ledd
 	}
+	else{
+		ud = 0;
+	}
+	if (ud > u_max)	ud = u_max;						// D-ledd restriction
+	if (ud < u_min)	ud = u_min;
 
-	u = up + ui + ud;										// calculating the total power
+	u = abs(up + ui + ud);										// calculating the total power
 
+	error_past = error;
 	abs_error_past = abs_error;
-
 	ui_past = ui;
 	ymf_past = ymf;
-
-
 }
-
-
 
 void LinMot_direction(void){	// TIM3 is sending the power to the LinMot and this say if it goes in positive or negative direction
 	    if(error < 0){
@@ -141,10 +136,8 @@ void LinMot_direction(void){	// TIM3 is sending the power to the LinMot and this
 	    }
 	}
 
-
 void power_delivery(void){
-    if (abs(error) <= 5)	// If error is smal → stop motor
-    {
+    if (abs(error) <= 3){	// If error is smal → stop motor
         TIM3->CCR1 = 0;		// Set PWM to 0
         TIM3->ARR = 0;
         return;   			// Stop function
@@ -154,31 +147,21 @@ void power_delivery(void){
         TIM3->ARR = 0;
         return;   			// Stop function
     }
-    // Begrens u til maks verdi
-    power = (u > 65535) ? 65535 : u;
+    power = (u > 65535) ? 65535 : u;	    // Is u max?
 
-    // Map u (0 → 65532) til frekvens (1k → 250k)
-    uint32_t freq = 1000 + (power * (250000 - 1000)) / 65535;
+    freq = 1000 + (power * (250000 - 1000)) / 65535;	    // Map u (0 → 65532) to frequency (1k → 250k)
+    if (freq < 1000)     freq = 1000;				// Check if frequency is to big or small
+    if (freq > 250000)   freq = 250000;				// or big
 
-    TIM3_setFrequency(freq);  // Set PSC + ARR automatisk
+    TIM3_setFrequency(freq);  // Set PSC + ARR
 
-    // 50 % duty
-    uint32_t arr = TIM3->ARR;
+    uint32_t arr = TIM3->ARR;	    // 50 % duty
     TIM3->CCR1 = (arr + 1) / 2;
 }
 
-
-void TIM3_setFrequency(uint32_t freq_hz)
-{
-    if (freq_hz < 1000)     freq_hz = 1000;
-    if (freq_hz > 250000)   freq_hz = 250000;
-
-    uint32_t timer_clk = 72000000;
-
-    // PSC beregnes matematisk uten loops
-    uint32_t psc = (timer_clk + (freq_hz * 65536UL) - 1) / (freq_hz * 65536UL);
+void TIM3_setFrequency(uint32_t freq_hz){
+    uint32_t psc = (timer_clk + (freq_hz * 65535UL) - 1) / (freq_hz * 65535UL);	    // PSC calculation
     if (psc > 0) psc -= 1;     // Formula give PSC+1, so take away 1
-
 
     period = (timer_clk / ((psc + 1) * freq_hz)) - 1;	// Calculating period (ARR)
 
@@ -190,9 +173,7 @@ void TIM3_setFrequency(uint32_t freq_hz)
     TIM3->CR1 |= TIM_CR1_CEN;      // Start timer
 }
 
-
 void construct_data_cc(void){
-
 	data_cc[0] = error & 0xFF;
 	data_cc[1] = (error >> 8) & 0xFF;
 	data_cc[2] = power & 0xFF;
@@ -203,7 +184,6 @@ void construct_data_cc(void){
 	data_cc[7] = (ui >> 8) & 0xFF;
 	data_cc[8] = ud & 0xFF;
 	data_cc[9] = (ud >> 8) & 0xFF;
-
 }
 
 

@@ -328,7 +328,7 @@ void USART2_send_tid8_og_data16(uint8_t tid, int16_t loggeverdi)  {
 	USART_skriv(USART2,(uint8_t)(hex2ascii_tabell[(data0 & 0x000F)]));	// Send LS Hex-siffer av dei 16 bitane
 }
 void USART2_send_package(void){	// This is being used to send data from control node to the PC
-
+	USART_Put(USART2, 0xFF);
 	USART_Put(USART2,data[0]);  	// Tid
 	USART_Put(USART2,data[1]);		// Avstand
 	USART_Put(USART2,data[2]);		// Avstand
@@ -348,6 +348,7 @@ void USART2_send_package(void){	// This is being used to send data from control 
 	USART_Put(USART2,data_cc[7]);	// uI
 	USART_Put(USART2,data_cc[8]);	// uD
 	USART_Put(USART2,data_cc[9]);	// uD
+	USART_Put(USART2, 0xF0);
 
 }
 
