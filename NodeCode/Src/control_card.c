@@ -94,12 +94,12 @@ void PID_calculation(void){
 	a = Tf/(Tf+Ts);											// Filter parameter
 
 	abs_error = abs(error);
-	if (abs_error > 3)  up = kp*error;						// P-Ledd
+	if (abs_error > 4)  up = kp*error;						// P-Ledd
 	else{
 		up = 0;
 	}
 
-	if (Ti > 0 && abs_error > 3){
+	if (Ti > 0 && abs_error > 4){
 		ui = ui_past + (kp*Ts*(error_past+error))/(Ti*2);	// I-Ledd
 	}
 	else{
@@ -110,7 +110,7 @@ void PID_calculation(void){
 
 	ymf = a*ymf_past+(1-a)*ym;								// Filter for the D-ledd
 
-	if (Ti > 0 && abs_error > 3){
+	if (Ti > 0 && abs_error > 4){
 		ud = -(kp*Td*(ymf-ymf_past))/Ts;			// D-ledd
 	}
 	else{
@@ -137,14 +137,16 @@ void LinMot_direction(void){	// TIM3 is sending the power to the LinMot and this
 	}
 
 void power_delivery(void){
-    if (abs(error) <= 3){	// If error is smal → stop motor
+    if (abs(error) <= 4){	// If error is smal → stop motor
         TIM3->CCR1 = 0;		// Set PWM to 0
         TIM3->ARR = 0;
+        power = 0;
         return;   			// Stop function
     }
     if (kp == 0 && Ti == 0 && Td == 0){
         TIM3->CCR1 = 0;		// Set PWM to 0
         TIM3->ARR = 0;
+        power = 0;
         return;   			// Stop function
     }
     power = (u > 65535) ? 65535 : u;	    // Is u max?
