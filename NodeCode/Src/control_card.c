@@ -110,7 +110,7 @@ void PID_calculation(void){
 
 	ymf = a*ymf_past+(1-a)*ym;								// Filter for the D-ledd
 
-	if (Ti > 0 && abs_error > 4){
+	if (Td > 0 && abs_error > 4){
 		ud = -(kp*Td*(ymf-ymf_past))/Ts;			// D-ledd
 	}
 	else{
@@ -169,8 +169,8 @@ void TIM3_setFrequency(uint32_t freq_hz){
 
     // Updating timer
     TIM3->CR1 &= ~TIM_CR1_CEN;     // Stop timer
-    TIM3->PSC = psc;
-    TIM3->ARR = period;
+    TIM3->PSC = psc;	//1;
+    TIM3->ARR = period;	//35999;
     TIM3->EGR = TIM_EGR_UG;        // Update shadow
     TIM3->CR1 |= TIM_CR1_CEN;      // Start timer
 }

@@ -47,7 +47,7 @@ extern uint32_t sensor_data_mean;
 extern uint16_t distance;
 
 // Sensor specific variables
-extern uint16_t dist_convertion[3101];
+extern uint16_t dist_convertion[3315];
 
 // Interrupt variables
 //---------------------------------------

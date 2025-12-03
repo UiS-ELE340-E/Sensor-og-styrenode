@@ -24,8 +24,8 @@ void sensor_card_logic(void){
 	if (slow_blink > 9){
 		GPIOE->ODR = GPIOE->ODR ^ 0x1000;
 		slow_blink = 0;
-		/* Calculate mean of 10 sensor data samples
-		for (int i = 0; i < 10; ++i)
+		//Calculate mean of 10 sensor data samples
+		/*for (int i = 0; i < 10; ++i)
 			sum += sensor_data_[i];
 		sensor_data_mean = sum / 10;
 		sum = 0;*/
