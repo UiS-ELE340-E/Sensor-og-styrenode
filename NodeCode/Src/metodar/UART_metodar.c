@@ -53,10 +53,10 @@ void USART1_init(void)
     GPIO_PinAFConfig(GPIOA, GPIO_PinSource10, GPIO_AF_7);
 }
 
-void USART1_DMA_init(uint8_t Tx){
+void USART1_DMA_init(uint8_t node){
     // --- Configure DMA ---
     DMA_InitTypeDef DMA_InitStructure;
-    if (Tx == 1){
+    if (node == 1){
     	DMA_DeInit(DMA1_Channel4);
     }
     else{
@@ -73,7 +73,7 @@ void USART1_DMA_init(uint8_t Tx){
     DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
     DMA_InitStructure.DMA_Priority = DMA_Priority_High;
     DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
-    if (Tx == 1){
+    if (node == 1){
     	DMA_Init(DMA1_Channel4, &DMA_InitStructure);
     }
     else{
@@ -81,8 +81,8 @@ void USART1_DMA_init(uint8_t Tx){
     }
 }
 
-void USART1_DMA_enable(uint8_t Tx){
-	if (Tx == 1){
+void USART1_DMA_enable(uint8_t node){
+	if (node == 1){
 		// --- Enable DMA for USART3 TX ---
 		USART_DMACmd(USART1, USART_DMAReq_Tx, ENABLE);
 	}
@@ -91,10 +91,10 @@ void USART1_DMA_enable(uint8_t Tx){
 		USART_DMACmd(USART1, USART_DMAReq_Rx, ENABLE);
 	}
 
-    // --- Enable USART3 ---
+    // --- Enable USART1 ---
     USART_Cmd(USART1, ENABLE);
 
-	if (Tx == 1){
+	if (node == 1){
 		// --- Enable DMA ---
 		DMA_Cmd(DMA2_Channel4, ENABLE);
 	}
@@ -196,7 +196,7 @@ void USART3_init(void)
     GPIO_PinAFConfig(GPIOD, GPIO_PinSource9, GPIO_AF_7);
 }
 
-void USART3_DMA_init(uint8_t Tx){
+void USART3_DMA_init(uint8_t node){
 	// --- Enable peripheral clocks ---
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 	// --- Deinitialize DMA1 channel 2 and 3 ---
@@ -212,7 +212,7 @@ void USART3_DMA_init(uint8_t Tx){
     DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
     DMA_InitStructure.DMA_Priority = DMA_Priority_High;
     DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
-    if (Tx == 1){
+    if (node == 1){
         DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&USART3->TDR;
         DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;
         DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
@@ -234,8 +234,8 @@ void USART3_DMA_init(uint8_t Tx){
     }
 }
 
-void USART3_DMA_enable(uint8_t Tx){
-	if (Tx == 1){
+void USART3_DMA_enable(uint8_t node){
+	if (node == 1){
 		// --- Enable DMA for USART3 TX ---
 		USART_DMACmd(USART3, USART_DMAReq_Tx, ENABLE);
 	}
@@ -247,7 +247,7 @@ void USART3_DMA_enable(uint8_t Tx){
     // --- Enable USART3 ---
     USART_Cmd(USART3, ENABLE);
 
-	if (Tx == 0){
+	if (node == 0){
 	    // --- Enable DMA RX ---
 	    DMA_Cmd(DMA1_Channel3, ENABLE);
 	}
