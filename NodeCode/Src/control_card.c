@@ -18,9 +18,9 @@ float a = 0.0f;					// Filter parameter
 float ymf = 0.0f;					// Filter quantity to D-ledd
 int32_t u_max = 65535;			// Max power
 int32_t u_min = -65535;
-int16_t kp = 2000;				// Proportinal parameter
+int16_t kp = 1200;				// Proportinal parameter
 float Ti = 1.0f;				// Integrator parameter
-float Td = 0.0f;					// Derivator parameter
+float Td = 0.012f;					// Derivator parameter
 uint32_t yr = 300; //reference;		// Reference
 uint8_t blink_test = 0;
 uint32_t timer_clk = 72000000;
@@ -162,17 +162,14 @@ void power_delivery(void){
 }
 
 void TIM3_setFrequency(uint32_t freq_hz){
-    uint32_t psc = (timer_clk + (freq_hz * 65535UL) - 1) / (freq_hz * 65535UL);	    // PSC calculation
+    uint32_t psc = (timer_clk + (freq_hz * 65535) - 1) / (freq_hz * 65535);	    // PSC calculation
     if (psc > 0) psc -= 1;     // Formula give PSC+1, so take away 1
 
     period = (timer_clk / ((psc + 1) * freq_hz)) - 1;	// Calculating period (ARR)
 
     // Updating timer
-    TIM3->CR1 &= ~TIM_CR1_CEN;     // Stop timer
     TIM3->PSC = psc;	//1;
     TIM3->ARR = period;	//35999;
-    TIM3->EGR = TIM_EGR_UG;        // Update shadow
-    TIM3->CR1 |= TIM_CR1_CEN;      // Start timer
 }
 
 void construct_data_cc(void){
